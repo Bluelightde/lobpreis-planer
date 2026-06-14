@@ -1,0 +1,651 @@
+{
+ "excel": {
+  "balance": [],
+  "busse": [
+   {
+    "bus": 1,
+    "name": "Emma"
+   },
+   {
+    "bus": 2,
+    "name": "Clara"
+   },
+   {
+    "bus": 3,
+    "name": "Bert"
+   },
+   {
+    "bus": 7,
+    "name": "Mara"
+   },
+   {
+    "bus": 8,
+    "name": "Felix"
+   }
+  ],
+  "inputs": [
+   {
+    "label": "Emma",
+    "mic": "",
+    "sb1": 1,
+    "sb2": null,
+    "zeile": 5
+   },
+   {
+    "label": "Mara",
+    "mic": "",
+    "sb1": null,
+    "sb2": 1,
+    "zeile": 6
+   },
+   {
+    "label": "",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 7
+   },
+   {
+    "label": "",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 8
+   },
+   {
+    "label": "",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 9
+   },
+   {
+    "label": "Synth L",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 10
+   },
+   {
+    "label": "Synth R",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 11
+   },
+   {
+    "label": "Piano/Pad L",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 12
+   },
+   {
+    "label": "Piano/Pad R",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 13
+   },
+   {
+    "label": "Bass",
+    "mic": "",
+    "sb1": 2,
+    "sb2": null,
+    "zeile": 14
+   },
+   {
+    "label": "A-Git",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 15
+   },
+   {
+    "label": "E-Git L",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 16
+   },
+   {
+    "label": "E-Git R",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 17
+   },
+   {
+    "label": "Geige",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 18
+   },
+   {
+    "label": "Bratsche",
+    "mic": "",
+    "sb1": 3,
+    "sb2": null,
+    "zeile": 19
+   },
+   {
+    "label": "Funk 1",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 20
+   },
+   {
+    "label": "Funk 2",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 21
+   },
+   {
+    "label": "Headset",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 22
+   },
+   {
+    "label": "Base (Kick)",
+    "mic": "Shure Beta 91",
+    "sb1": null,
+    "sb2": 2,
+    "zeile": 23
+   },
+   {
+    "label": "Base (Boom)",
+    "mic": "Audix D6",
+    "sb1": null,
+    "sb2": 3,
+    "zeile": 24
+   },
+   {
+    "label": "Snare oben",
+    "mic": "Beyerdynamic",
+    "sb1": null,
+    "sb2": 4,
+    "zeile": 25
+   },
+   {
+    "label": "Snare unten",
+    "mic": "",
+    "sb1": null,
+    "sb2": 5,
+    "zeile": 26
+   },
+   {
+    "label": "HiHat",
+    "mic": "Sennheiser bf541",
+    "sb1": null,
+    "sb2": 6,
+    "zeile": 27
+   },
+   {
+    "label": "Tom klein",
+    "mic": "Audix D2",
+    "sb1": null,
+    "sb2": 7,
+    "zeile": 28
+   },
+   {
+    "label": "Tom mittel",
+    "mic": "Audix D4",
+    "sb1": null,
+    "sb2": 8,
+    "zeile": 29
+   },
+   {
+    "label": "Tom groß",
+    "mic": "",
+    "sb1": null,
+    "sb2": 9,
+    "zeile": 30
+   },
+   {
+    "label": "OH links",
+    "mic": "AKG OH",
+    "sb1": null,
+    "sb2": 10,
+    "zeile": 31
+   },
+   {
+    "label": "OH rechts",
+    "mic": "AKG OH",
+    "sb1": null,
+    "sb2": 11,
+    "zeile": 32
+   },
+   {
+    "label": "Klick",
+    "mic": "",
+    "sb1": null,
+    "sb2": 12,
+    "zeile": 33
+   },
+   {
+    "label": "Track",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 34
+   },
+   {
+    "label": "Track Klick",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 35
+   },
+   {
+    "label": "Saal",
+    "mic": "",
+    "sb1": 4,
+    "sb2": null,
+    "zeile": 36
+   },
+   {
+    "label": "MD",
+    "mic": "",
+    "sb1": 5,
+    "sb2": null,
+    "zeile": 37
+   },
+   {
+    "label": "Teamspeak",
+    "mic": "",
+    "sb1": 6,
+    "sb2": null,
+    "zeile": 38
+   }
+  ],
+  "instrumente": [
+   {
+    "person": null,
+    "rolle": "Synth",
+    "seite": null
+   },
+   {
+    "person": null,
+    "rolle": "Piano",
+    "seite": null
+   },
+   {
+    "person": "Bert",
+    "rolle": "Bass",
+    "seite": "SB1"
+   },
+   {
+    "person": null,
+    "rolle": "A-Git",
+    "seite": null
+   },
+   {
+    "person": null,
+    "rolle": "E-Git",
+    "seite": null
+   },
+   {
+    "person": null,
+    "rolle": "Geige",
+    "seite": null
+   },
+   {
+    "person": "Clara",
+    "rolle": "Bratsche",
+    "seite": "SB1"
+   },
+   {
+    "person": "Felix",
+    "rolle": "Drums",
+    "seite": "SB2"
+   }
+  ],
+  "monitor": {
+   "links": [
+    {
+     "name": "Emma",
+     "zelle": "J5"
+    },
+    {
+     "name": "Clara",
+     "zelle": "J6"
+    },
+    {
+     "name": "Bert",
+     "zelle": "J7"
+    }
+   ],
+   "rechts": [
+    {
+     "name": "Mara",
+     "zelle": "J13"
+    },
+    {
+     "name": "Felix",
+     "zelle": "J14"
+    }
+   ]
+  },
+  "quellen": {
+   "5": 1,
+   "6": 17,
+   "14": 2,
+   "19": 3,
+   "23": 18,
+   "24": 19,
+   "25": 20,
+   "26": 21,
+   "27": 22,
+   "28": 23,
+   "29": 24,
+   "30": 25,
+   "31": 26,
+   "32": 27,
+   "33": 28,
+   "36": 4,
+   "37": 5,
+   "38": 6
+  },
+  "stagebox1": [
+   {
+    "label": "Emma",
+    "mic": "",
+    "nr": 1,
+    "source": "A1"
+   },
+   {
+    "label": "Bass",
+    "mic": "",
+    "nr": 2,
+    "source": "A2"
+   },
+   {
+    "label": "Bratsche",
+    "mic": "",
+    "nr": 3,
+    "source": "A3"
+   },
+   {
+    "label": "Saal",
+    "mic": "",
+    "nr": 4,
+    "source": "A4"
+   },
+   {
+    "label": "MD",
+    "mic": "",
+    "nr": 5,
+    "source": "A5"
+   },
+   {
+    "label": "Teamspeak",
+    "mic": "",
+    "nr": 6,
+    "source": "A6"
+   }
+  ],
+  "stagebox2": [
+   {
+    "label": "Mara",
+    "mic": "",
+    "nr": 1,
+    "source": "A17"
+   },
+   {
+    "label": "Base (Kick)",
+    "mic": "Shure Beta 91",
+    "nr": 2,
+    "source": "A18"
+   },
+   {
+    "label": "Base (Boom)",
+    "mic": "Audix D6",
+    "nr": 3,
+    "source": "A19"
+   },
+   {
+    "label": "Snare oben",
+    "mic": "Beyerdynamic",
+    "nr": 4,
+    "source": "A20"
+   },
+   {
+    "label": "Snare unten",
+    "mic": "",
+    "nr": 5,
+    "source": "A21"
+   },
+   {
+    "label": "HiHat",
+    "mic": "Sennheiser bf541",
+    "nr": 6,
+    "source": "A22"
+   },
+   {
+    "label": "Tom klein",
+    "mic": "Audix D2",
+    "nr": 7,
+    "source": "A23"
+   },
+   {
+    "label": "Tom mittel",
+    "mic": "Audix D4",
+    "nr": 8,
+    "source": "A24"
+   },
+   {
+    "label": "Tom groß",
+    "mic": "",
+    "nr": 9,
+    "source": "A25"
+   },
+   {
+    "label": "OH links",
+    "mic": "AKG OH",
+    "nr": 10,
+    "source": "A26"
+   },
+   {
+    "label": "OH rechts",
+    "mic": "AKG OH",
+    "nr": 11,
+    "source": "A27"
+   },
+   {
+    "label": "Klick",
+    "mic": "",
+    "nr": 12,
+    "source": "A28"
+   }
+  ],
+  "ueberzaehlige_saenger": [],
+  "voc": [
+   {
+    "name": "Emma",
+    "roh": "Emma",
+    "seite": "SB1",
+    "voc": 1
+   },
+   {
+    "name": "Mara",
+    "roh": "Mara",
+    "seite": "SB2",
+    "voc": 2
+   },
+   {
+    "name": null,
+    "roh": null,
+    "seite": null,
+    "voc": 3
+   },
+   {
+    "name": null,
+    "roh": null,
+    "seite": null,
+    "voc": 4
+   },
+   {
+    "name": null,
+    "roh": null,
+    "seite": null,
+    "voc": 5
+   }
+  ]
+ },
+ "hinten": [
+  {
+   "instrument": "Bass",
+   "name": "Bert",
+   "rollen": "Bass",
+   "voll": "Bert"
+  },
+  {
+   "instrument": "Drums",
+   "name": "Felix",
+   "rollen": "Drums",
+   "voll": "Felix"
+  }
+ ],
+ "kuerzel": "DD1",
+ "scene": {
+  "busse": [
+   {
+    "bus": 1,
+    "name": "Emma"
+   },
+   {
+    "bus": 2,
+    "name": "Clara"
+   },
+   {
+    "bus": 3,
+    "name": "Bert"
+   },
+   {
+    "bus": 7,
+    "name": "Mara"
+   },
+   {
+    "bus": 8,
+    "name": "Felix"
+   }
+  ],
+  "engpass": [],
+  "quellen": [
+   {
+    "kanal": 1,
+    "source": 1
+   },
+   {
+    "kanal": 2,
+    "source": 17
+   },
+   {
+    "kanal": 10,
+    "source": 2
+   },
+   {
+    "kanal": 17,
+    "source": 18
+   },
+   {
+    "kanal": 18,
+    "source": 19
+   },
+   {
+    "kanal": 19,
+    "source": 20
+   },
+   {
+    "kanal": 20,
+    "source": 21
+   },
+   {
+    "kanal": 21,
+    "source": 22
+   },
+   {
+    "kanal": 22,
+    "source": 23
+   },
+   {
+    "kanal": 23,
+    "source": 24
+   },
+   {
+    "kanal": 24,
+    "source": 25
+   },
+   {
+    "kanal": 25,
+    "source": 26
+   },
+   {
+    "kanal": 26,
+    "source": 27
+   },
+   {
+    "kanal": 27,
+    "source": 28
+   },
+   {
+    "kanal": 28,
+    "source": 6
+   },
+   {
+    "kanal": 29,
+    "source": 5
+   },
+   {
+    "kanal": 30,
+    "source": 4
+   }
+  ],
+  "voc": [
+   {
+    "kanal": 1,
+    "name": "Emma",
+    "voc": 1
+   },
+   {
+    "kanal": 2,
+    "name": "Mara",
+    "voc": 2
+   },
+   {
+    "kanal": 3,
+    "name": null,
+    "voc": 3
+   },
+   {
+    "kanal": 4,
+    "name": null,
+    "voc": 4
+   }
+  ]
+ },
+ "solo": [
+  {
+   "name": "Clara",
+   "rollen": "Bratsche",
+   "voll": "Clara"
+  }
+ ],
+ "vorne": [
+  {
+   "name": "Emma",
+   "rollen": "Voc",
+   "voll": "Emma"
+  },
+  {
+   "name": "Mara",
+   "rollen": "Voc",
+   "voll": "Mara"
+  }
+ ]
+}

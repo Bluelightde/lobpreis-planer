@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Lobpreis-Planer
+Comment=Bühnen-Skizzen und Setlisten erstellen
+Exec=/home/miw/Dokumente/GitHub/lobpreis-planer/start.sh
+Icon=utilities-terminal
+Type=Application
+Terminal=true
+Categories=Utility;Office;
+Keywords=ChurchTools;Worship;Music;

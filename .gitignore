@@ -1,0 +1,33 @@
+# Persoenliche Daten mit echten Namen -- nur lokal, nicht ins Repo.
+# Vorlagen-Format steht in den *.example.json daneben.
+config/config.json
+config/spitznamen.json
+config/solo_personen.json
+
+# erzeugte Dateien
+ausgabe/
+
+# lokaler Agenda-Cache (werkzeuge/setlisten_check.py)
+.cache/
+
+# persoenliche Einstellungen (optional)
+# config/einstellungen.json
+
+# Bilder / Screenshots ausschließen
+*.png
+
+# Log-Dateien
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS / Temporary
+.DS_Store
+.directory
+*~
+.~lock.*
+*.bak
+*.tmp

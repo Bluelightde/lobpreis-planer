@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lobpreis-Planer</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script>
+  // Theme VOR dem ersten Rendern setzen (verhindert kurzes Aufblitzen im Light Mode).
+  // Klasse kommt auf <html>, weil <body> hier im <head> noch nicht existiert.
+   (function () {
+    try {
+      var p = new URLSearchParams(location.search).get('theme');
+      var dark = localStorage.getItem('lp-theme') === 'dark';
+      if (p === 'dark') dark = true;
+      if (p === 'light') dark = false;
+      if (dark) document.documentElement.classList.add('dark');
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="serverWeg" class="server-weg" hidden role="alert">
+  <span class="sw-icon">⚠️</span>
+  <div class="sw-text">
+    <b>Server nicht erreichbar.</b>
+    Bitte den Lobpreis-Planer neu starten (Doppelklick aufs Symbol oder
+    <code>python3&nbsp;ui.py</code>) und danach die Seite neu laden.
+  </div>
+  <button id="serverNeuLaden" class="sw-btn">Seite neu laden</button>
+</div>
+<header>
+  <h1>🎚️ Lobpreis-Planer</h1>
+  <span class="sub">Besetzung → Bühnen-Skizze + X32-Belegungsplan</span>
+  <span id="version" class="sub" style="opacity:.6;margin-left:10px" title="laufende Programmversion"></span>
+  <button class="sek" id="openSettings" style="margin-left:auto">⚙️ Einstellungen</button>
+  <button class="sek" id="theme">🌙 Dark</button>
+</header>
+<main>
+  <div class="spalte">
+  <section class="card">
+    <label for="txt">Besetzung</label>
+    <textarea id="txt" placeholder="Lobpreisleitung DD1: ...&#10;Bass DD1: ...&#10;Drums DD1: ...&#10;A-Git DD1: ...&#10;Gesang DD1 1: ...&#10;Gesang DD1 2: ..."></textarea>
+    <div class="row">
+      <div style="flex:0 0 150px">
+        <label for="name">Dateiname</label>
+        <input type="text" id="name" value="DD1">
+      </div>
+      <div><button id="go" style="width:100%">Erzeugen</button></div>
+    </div>
+    <label style="font-weight:400; margin-top:12px; display:flex; align-items:center; gap:8px; cursor:pointer">
+      <input type="checkbox" id="trackAktiv" style="width:auto; margin:0"> Track + Track (Klick) als Eingänge verwenden
+    </label>
+    <div class="hint">Tipp: „?“ oder leer = unbesetzt. Mehrfachrollen werden je Person zusammengefasst.</div>
+  </section>
+
+  <section class="card spalte-umbruch">
+    <label for="setliste">Setliste (Bearbeiten)</label>
+    <div style="overflow-x:auto">
+      <table class="sl-table" id="slTable">
+        <thead>
+          <tr><th style="width:30px">Nr</th><th>Lied</th><th>Stimme</th><th>Instrument</th><th>Bemerkung</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div style="display:flex; align-items:stretch; gap:8px; flex-wrap:nowrap">
+      <span class="full-btn" id="slAddRow">➕ Zeile</span>
+      <span class="full-btn" id="slOpenEdit" title="Details bearbeiten">📝 Details</span>
+      <span class="full-btn primary" id="slOpenMisch" title="Misch-Modus">🖥️ Misch</span>
+    </div>
+  </section>
+
+  <section class="card kalender-umbruch">
+    <label>Aus ChurchTools laden</label>
+    <div id="ctKalender" class="cal">
+      <div class="cal-head">
+        <button class="cal-nav" id="calPrev" title="Vorheriger Monat">‹</button>
+        <span class="cal-title-wrap">
+          <span class="cal-title" id="calTitle"></span>
+          <span id="calSpinner" class="cal-spinner" title="Termine werden geladen…" hidden></span>
+        </span>
+        <button class="cal-nav" id="calNext" title="Nächster Monat">›</button>
+      </div>
+      <div class="cal-grid" id="calDow"></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><i class="cal-dot" style="background:var(--akz)"></i>deine Dienste</span>
+        <span><i class="cal-dot" style="background:#e2e8f0"></i>Termin vorhanden</span>
+      </div>
+      <!-- Termine eines Tages als schwebendes Overlay: veraendert die Kartenhoehe
+           NICHT -> das Spalten-Layout rebalanciert nicht, nichts wandert beim Klick. -->
+      <div id="ctPopover" class="ev-popover" style="display:none">
+        <div id="ctEventsList" class="ev-list" style="display:none"></div>
+        <div class="row" id="ctLadenRow" style="display:none">
+          <div><button id="ctLaden" style="width:100%">Besetzung laden</button></div>
+        </div>
+        <div class="hint" id="ctPopMsg" style="margin-top:6px"></div>
+      </div>
+    </div>
+    <input type="hidden" id="ctDatum">
+    <div class="hint" id="ctMsg"></div>
+    <details style="margin-top:10px">
+      <summary class="hint" style="cursor:pointer">ChurchTools-Token einstellen</summary>
+      <input type="password" id="ctToken" placeholder="Login-Token" style="width:100%;margin-top:6px">
+      <div class="row">
+        <div><button class="sek" id="ctTokenSave">Token speichern</button></div>
+        <div><span class="hint" id="ctTokenMsg"></span></div>
+      </div>
+      <div class="hint">Token in ChurchTools: eigenes Profil → „Berechtigungen". Wird lokal in <code>config/config.json</code> gespeichert.</div>
+    </details>
+  </section>
+
+  <section class="card">
+    <label for="spitz">Spitznamen <span class="hint">(werden in Skizze &amp; Excel statt des Vornamens verwendet)</span></label>
+    <textarea id="spitz" style="height:150px" placeholder="Voller Name = Spitzname&#10;Ida Hoffmann = Konsti&#10;Greta Wagner = Mary"></textarea>
+    <div class="row">
+      <div><button class="sek" id="spitzSave">Spitznamen speichern</button></div>
+      <div><span class="hint" id="spitzMsg"></span></div>
+    </div>
+    <div class="hint">Eine Zuordnung pro Zeile: <code>Voller Name = Spitzname</code>. Gilt dauerhaft (gespeichert).</div>
+  </section>
+
+  <section class="card">
+    <label for="solo">Spezial: Solo-Instrument je Person <span class="hint">(Standard ist Geige)</span></label>
+    <textarea id="solo" style="height:110px" placeholder="Voller Name = Instrument&#10;Carla Weber = Bratsche"></textarea>
+    <div class="row">
+      <div><button class="sek" id="soloSave">Spezial-Zuordnung speichern</button></div>
+      <div><span class="hint" id="soloMsg"></span></div>
+    </div>
+    <div class="hint">Wer „Solo" spielt, nutzt sonst die <b>Geige</b>; hier abweichende Instrumente (z. B. <code>= Bratsche</code>) hinterlegen. Wirkt in Skizze &amp; Excel.</div>
+  </section>
+  </div>
+
+  <div id="ergebnis" style="display:none">
+    <div id="fehler"></div>
+    <div id="excelWarn"></div>
+    <section class="card">
+      <h3>Bühnen-Vorschau <span id="kuerzel" class="pill"></span></h3>
+      <div class="preview" id="svg"></div>
+      <div class="hint" style="margin-top:6px">Felder per <b>Ziehen</b> verschieben (<b>Shift+Klick</b>/Rechteck markiert mehrere, gemeinsam ziehbar). Gilt nur für <b>diese Besetzung</b> — den Standard änderst du in den ⚙️ Einstellungen.</div>
+      <div class="dl">
+        <button class="sek" id="skizzeReset">↺ Skizze zurücksetzen</button>
+        <button class="sek" id="dlSkizze">⬇ Skizze (.excalidraw)</button>
+        <button class="sek" id="dlExcel">⬇ Belegungsplan (.xlsx)</button>
+        <button class="sek" id="dlScene">⬇ X32-Szene (.scn)</button>
+      </div>
+    </section>
+    <section class="card">
+      <h3>Patchliste <span class="hint">(wie im Belegungsplan)</span></h3>
+      <div id="patchWarn" class="warn" hidden></div>
+      <div class="dl"><button class="sek" id="patchReset">↺ Patchliste zurücksetzen</button></div>
+      <div class="patch3">
+        <div class="ueb-block">
+          <h4>Inputs <span class="hint">(Reihenfolge der Vorlage, SB1/SB2 editierbar)</span></h4>
+          <table id="tInputs" class="kompakt">
+            <thead><tr><th>Kanal</th><th>Mic</th><th class="num" style="width:38px">SB1</th><th class="num" style="width:38px">SB2</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="ueb-block">
+          <h4>Stagebox 01 <span class="hint" id="sb1Range">(A1–A16)</span></h4>
+          <table id="tSB1" class="kompakt"><thead><tr><th class="num" style="width:26px">Nr</th><th class="num" style="width:34px">A</th><th>Kanal</th><th>Mic</th></tr></thead><tbody></tbody></table>
+        </div>
+        <div class="ueb-block">
+          <h4>Stagebox 02 <span class="hint" id="sb2Range">(A17–A32)</span></h4>
+          <table id="tSB2" class="kompakt"><thead><tr><th class="num" style="width:26px">Nr</th><th class="num" style="width:34px">A</th><th>Kanal</th><th>Mic</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+    <div class="grid2 ergebnis-paar">
+      <section class="card">
+        <h3>Outputs <span class="hint">(Monitore → Mix-Bus, Name editierbar)</span></h3>
+        <table id="tOutputs"><thead><tr><th style="width:84px">Mix-Bus</th><th>Monitor</th></tr></thead><tbody></tbody></table>
+      </section>
+      <section class="card">
+        <h3>Personen</h3>
+        <table id="tPersonen"><tbody></tbody></table>
+      </section>
+    </div>
+    <section class="card">
+      <h3>X32-Szene <span class="hint">(Vox-Namen, Sources aus Spalte D, Bus-Namen aus J/K)</span></h3>
+      <div id="sceneInfo" class="hint"></div>
+    </section>
+  </div>
+</main>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 style="margin:0">Regeln / Einstellungen</h3>
+      <button class="sek" id="closeSettings">✕ Schließen</button>
+    </div>
+    <div class="hint" style="margin-bottom:6px">💡 Standard-Layout: Felder und Stageboxen (SB1/SB2) per <b>Ziehen</b> verschieben. <b>Shift+Klick</b> oder <b>Rechteck aufziehen</b> markiert mehrere Felder — ein markiertes Feld ziehen verschiebt alle gemeinsam. Gilt als Vorgabe für alle Besetzungen.</div>
+    <div class="preview" id="regelnSvg" style="margin-bottom:10px"></div>
+    <div id="regeln" class="regeln"></div>
+    <div class="row">
+      <div><button id="regelnSave">Einstellungen speichern</button></div>
+      <div><span class="hint" id="regelnMsg"></span></div>
+    </div>
+    <div class="hint">Überschreibt die Standard-Konfiguration (Positionen in Skizzen-Koordinaten). Wirkt sofort in der Vorschau.</div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal" hidden>
+  <div class="modal-box" style="max-width:430px">
+    <h3 style="margin-top:0">Bestätigen</h3>
+    <p id="confirmText" style="margin:8px 0 16px"></p>
+    <div class="row" style="justify-content:flex-end; gap:8px">
+      <button class="sek" id="confirmNein">Abbrechen</button>
+      <button id="confirmJa">Zurücksetzen</button>
+    </div>
+  </div>
+</div>
+
+<div id="slEditModal" class="modal" hidden>
+  <div class="modal-box" style="width:1000px">
+    <div class="modal-head">
+      <h3 style="margin:0">Setliste bearbeiten (alle Details)</h3>
+      <button class="sek" id="closeSlEdit">✕ Schließen</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="sl-table" id="slTableEdit" style="table-layout: auto;">
+        <thead>
+          <tr><th style="width:40px">Nr</th><th>Lied</th><th>Stimme</th><th>Instrument</th><th>Bemerkung</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row">
+      <button class="sek" id="slEditAddRow">+ Zeile hinzufügen</button>
+    </div>
+  </div>
+</div>
+
+<div id="mischModus">
+  <div class="head">
+    <h2>🎵 Setliste</h2>
+    <button id="closeMisch" style="padding:15px 25px; font-size:18px">✕ Schließen</button>
+  </div>
+  <div style="flex:1; overflow-y:auto">
+    <table id="mischTable">
+      <thead>
+        <tr><th class="nr">#</th><th>Lied</th><th>Stimme</th><th>Instrument</th><th>Bemerkung</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

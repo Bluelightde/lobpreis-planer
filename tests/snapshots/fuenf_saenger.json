@@ -1,0 +1,857 @@
+{
+ "excel": {
+  "balance": [
+   {
+    "anzahl": 1,
+    "label": "A-Git",
+    "nach": "SB1",
+    "von": "SB2"
+   },
+   {
+    "anzahl": 2,
+    "label": "Synth",
+    "nach": "SB1",
+    "von": "SB2"
+   }
+  ],
+  "busse": [
+   {
+    "bus": 1,
+    "name": "Paula"
+   },
+   {
+    "bus": 2,
+    "name": "Tim"
+   },
+   {
+    "bus": 3,
+    "name": "Lisa"
+   },
+   {
+    "bus": 4,
+    "name": "Lena"
+   },
+   {
+    "bus": 5,
+    "name": "Rosa"
+   },
+   {
+    "bus": 7,
+    "name": "Ute"
+   },
+   {
+    "bus": 8,
+    "name": "Quentin"
+   },
+   {
+    "bus": 9,
+    "name": "Tim"
+   },
+   {
+    "bus": 10,
+    "name": "Bob"
+   },
+   {
+    "bus": 11,
+    "name": "Karl"
+   }
+  ],
+  "inputs": [
+   {
+    "label": "Paula",
+    "mic": "",
+    "sb1": 1,
+    "sb2": null,
+    "zeile": 5
+   },
+   {
+    "label": "Tim",
+    "mic": "",
+    "sb1": 2,
+    "sb2": null,
+    "zeile": 6
+   },
+   {
+    "label": "Lisa",
+    "mic": "",
+    "sb1": 3,
+    "sb2": null,
+    "zeile": 7
+   },
+   {
+    "label": "Ute",
+    "mic": "",
+    "sb1": null,
+    "sb2": 1,
+    "zeile": 8
+   },
+   {
+    "label": "Quentin",
+    "mic": "",
+    "sb1": null,
+    "sb2": 2,
+    "zeile": 9
+   },
+   {
+    "label": "Synth L",
+    "mic": "DI-Box",
+    "sb1": 4,
+    "sb2": null,
+    "zeile": 10
+   },
+   {
+    "label": "Synth R",
+    "mic": "DI-Box",
+    "sb1": 5,
+    "sb2": null,
+    "zeile": 11
+   },
+   {
+    "label": "Piano/Pad L",
+    "mic": "DI-Box",
+    "sb1": 6,
+    "sb2": null,
+    "zeile": 12
+   },
+   {
+    "label": "Piano/Pad R",
+    "mic": "DI-Box",
+    "sb1": 7,
+    "sb2": null,
+    "zeile": 13
+   },
+   {
+    "label": "Bass",
+    "mic": "",
+    "sb1": 8,
+    "sb2": null,
+    "zeile": 14
+   },
+   {
+    "label": "A-Git",
+    "mic": "DI-Box",
+    "sb1": 9,
+    "sb2": null,
+    "zeile": 15
+   },
+   {
+    "label": "E-Git L",
+    "mic": "",
+    "sb1": null,
+    "sb2": 3,
+    "zeile": 16
+   },
+   {
+    "label": "E-Git R",
+    "mic": "DI-Box",
+    "sb1": null,
+    "sb2": 4,
+    "zeile": 17
+   },
+   {
+    "label": "Geige",
+    "mic": "",
+    "sb1": 10,
+    "sb2": null,
+    "zeile": 18
+   },
+   {
+    "label": "Bratsche",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 19
+   },
+   {
+    "label": "Funk 1",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 20
+   },
+   {
+    "label": "Funk 2",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 21
+   },
+   {
+    "label": "Headset",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 22
+   },
+   {
+    "label": "Base (Kick)",
+    "mic": "Shure Beta 91",
+    "sb1": null,
+    "sb2": 5,
+    "zeile": 23
+   },
+   {
+    "label": "Base (Boom)",
+    "mic": "Audix D6",
+    "sb1": null,
+    "sb2": 6,
+    "zeile": 24
+   },
+   {
+    "label": "Snare oben",
+    "mic": "Beyerdynamic",
+    "sb1": null,
+    "sb2": 7,
+    "zeile": 25
+   },
+   {
+    "label": "Snare unten",
+    "mic": "",
+    "sb1": null,
+    "sb2": 8,
+    "zeile": 26
+   },
+   {
+    "label": "HiHat",
+    "mic": "Sennheiser bf541",
+    "sb1": null,
+    "sb2": 9,
+    "zeile": 27
+   },
+   {
+    "label": "Tom klein",
+    "mic": "Audix D2",
+    "sb1": null,
+    "sb2": 10,
+    "zeile": 28
+   },
+   {
+    "label": "Tom mittel",
+    "mic": "Audix D4",
+    "sb1": null,
+    "sb2": 11,
+    "zeile": 29
+   },
+   {
+    "label": "Tom groß",
+    "mic": "",
+    "sb1": null,
+    "sb2": 12,
+    "zeile": 30
+   },
+   {
+    "label": "OH links",
+    "mic": "AKG OH",
+    "sb1": null,
+    "sb2": 13,
+    "zeile": 31
+   },
+   {
+    "label": "OH rechts",
+    "mic": "AKG OH",
+    "sb1": null,
+    "sb2": 14,
+    "zeile": 32
+   },
+   {
+    "label": "Klick",
+    "mic": "",
+    "sb1": null,
+    "sb2": 15,
+    "zeile": 33
+   },
+   {
+    "label": "Track",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 34
+   },
+   {
+    "label": "Track Klick",
+    "mic": "",
+    "sb1": null,
+    "sb2": null,
+    "zeile": 35
+   },
+   {
+    "label": "Saal",
+    "mic": "",
+    "sb1": 11,
+    "sb2": null,
+    "zeile": 36
+   },
+   {
+    "label": "MD",
+    "mic": "",
+    "sb1": 12,
+    "sb2": null,
+    "zeile": 37
+   },
+   {
+    "label": "Teamspeak",
+    "mic": "",
+    "sb1": 13,
+    "sb2": null,
+    "zeile": 38
+   }
+  ],
+  "instrumente": [
+   {
+    "person": "Bob",
+    "rolle": "Synth",
+    "seite": "SB2"
+   },
+   {
+    "person": "Paula",
+    "rolle": "Piano",
+    "seite": "SB1"
+   },
+   {
+    "person": "Rosa",
+    "rolle": "Bass",
+    "seite": "SB1"
+   },
+   {
+    "person": "Tim",
+    "rolle": "A-Git",
+    "seite": "SB2"
+   },
+   {
+    "person": "Quentin",
+    "rolle": "E-Git",
+    "seite": "SB2"
+   },
+   {
+    "person": "Lena",
+    "rolle": "Geige",
+    "seite": "SB1"
+   },
+   {
+    "person": null,
+    "rolle": "Bratsche",
+    "seite": null
+   },
+   {
+    "person": "Karl",
+    "rolle": "Drums",
+    "seite": "SB2"
+   }
+  ],
+  "monitor": {
+   "links": [
+    {
+     "name": "Paula",
+     "zelle": "J5"
+    },
+    {
+     "name": "Tim",
+     "zelle": "J6"
+    },
+    {
+     "name": "Lisa",
+     "zelle": "J7"
+    },
+    {
+     "name": "Lena",
+     "zelle": "J8"
+    },
+    {
+     "name": "Rosa",
+     "zelle": "J9"
+    }
+   ],
+   "rechts": [
+    {
+     "name": "Ute",
+     "zelle": "J13"
+    },
+    {
+     "name": "Quentin",
+     "zelle": "J14"
+    },
+    {
+     "name": "Tim",
+     "zelle": "J15"
+    },
+    {
+     "name": "Bob",
+     "zelle": "J16"
+    },
+    {
+     "name": "Karl",
+     "zelle": "J17"
+    }
+   ]
+  },
+  "quellen": {
+   "5": 1,
+   "6": 2,
+   "7": 3,
+   "8": 17,
+   "9": 18,
+   "10": 4,
+   "11": 5,
+   "12": 6,
+   "13": 7,
+   "14": 8,
+   "15": 9,
+   "16": 19,
+   "17": 20,
+   "18": 10,
+   "23": 21,
+   "24": 22,
+   "25": 23,
+   "26": 24,
+   "27": 25,
+   "28": 26,
+   "29": 27,
+   "30": 28,
+   "31": 29,
+   "32": 30,
+   "33": 31,
+   "36": 11,
+   "37": 12,
+   "38": 13
+  },
+  "stagebox1": [
+   {
+    "label": "Paula",
+    "mic": "",
+    "nr": 1,
+    "source": "A1"
+   },
+   {
+    "label": "Tim",
+    "mic": "",
+    "nr": 2,
+    "source": "A2"
+   },
+   {
+    "label": "Lisa",
+    "mic": "",
+    "nr": 3,
+    "source": "A3"
+   },
+   {
+    "label": "Synth L",
+    "mic": "DI-Box",
+    "nr": 4,
+    "source": "A4"
+   },
+   {
+    "label": "Synth R",
+    "mic": "DI-Box",
+    "nr": 5,
+    "source": "A5"
+   },
+   {
+    "label": "Piano/Pad L",
+    "mic": "DI-Box",
+    "nr": 6,
+    "source": "A6"
+   },
+   {
+    "label": "Piano/Pad R",
+    "mic": "DI-Box",
+    "nr": 7,
+    "source": "A7"
+   },
+   {
+    "label": "Bass",
+    "mic": "",
+    "nr": 8,
+    "source": "A8"
+   },
+   {
+    "label": "A-Git",
+    "mic": "DI-Box",
+    "nr": 9,
+    "source": "A9"
+   },
+   {
+    "label": "Geige",
+    "mic": "",
+    "nr": 10,
+    "source": "A10"
+   },
+   {
+    "label": "Saal",
+    "mic": "",
+    "nr": 11,
+    "source": "A11"
+   },
+   {
+    "label": "MD",
+    "mic": "",
+    "nr": 12,
+    "source": "A12"
+   },
+   {
+    "label": "Teamspeak",
+    "mic": "",
+    "nr": 13,
+    "source": "A13"
+   }
+  ],
+  "stagebox2": [
+   {
+    "label": "Ute",
+    "mic": "",
+    "nr": 1,
+    "source": "A17"
+   },
+   {
+    "label": "Quentin",
+    "mic": "",
+    "nr": 2,
+    "source": "A18"
+   },
+   {
+    "label": "E-Git L",
+    "mic": "",
+    "nr": 3,
+    "source": "A19"
+   },
+   {
+    "label": "E-Git R",
+    "mic": "DI-Box",
+    "nr": 4,
+    "source": "A20"
+   },
+   {
+    "label": "Base (Kick)",
+    "mic": "Shure Beta 91",
+    "nr": 5,
+    "source": "A21"
+   },
+   {
+    "label": "Base (Boom)",
+    "mic": "Audix D6",
+    "nr": 6,
+    "source": "A22"
+   },
+   {
+    "label": "Snare oben",
+    "mic": "Beyerdynamic",
+    "nr": 7,
+    "source": "A23"
+   },
+   {
+    "label": "Snare unten",
+    "mic": "",
+    "nr": 8,
+    "source": "A24"
+   },
+   {
+    "label": "HiHat",
+    "mic": "Sennheiser bf541",
+    "nr": 9,
+    "source": "A25"
+   },
+   {
+    "label": "Tom klein",
+    "mic": "Audix D2",
+    "nr": 10,
+    "source": "A26"
+   },
+   {
+    "label": "Tom mittel",
+    "mic": "Audix D4",
+    "nr": 11,
+    "source": "A27"
+   },
+   {
+    "label": "Tom groß",
+    "mic": "",
+    "nr": 12,
+    "source": "A28"
+   },
+   {
+    "label": "OH links",
+    "mic": "AKG OH",
+    "nr": 13,
+    "source": "A29"
+   },
+   {
+    "label": "OH rechts",
+    "mic": "AKG OH",
+    "nr": 14,
+    "source": "A30"
+   },
+   {
+    "label": "Klick",
+    "mic": "",
+    "nr": 15,
+    "source": "A31"
+   }
+  ],
+  "ueberzaehlige_saenger": [],
+  "voc": [
+   {
+    "name": "Paula",
+    "roh": "Paula Wolf",
+    "seite": "SB1",
+    "voc": 1
+   },
+   {
+    "name": "Tim",
+    "roh": "Tim",
+    "seite": "SB1",
+    "voc": 2
+   },
+   {
+    "name": "Lisa",
+    "roh": "Lisa",
+    "seite": "SB1",
+    "voc": 3
+   },
+   {
+    "name": "Ute",
+    "roh": "Ute Braun",
+    "seite": "SB2",
+    "voc": 4
+   },
+   {
+    "name": "Quentin",
+    "roh": "Quentin Schröder",
+    "seite": "SB2",
+    "voc": 5
+   }
+  ]
+ },
+ "hinten": [
+  {
+   "instrument": "Synth",
+   "name": "Bob",
+   "rollen": "Synth",
+   "voll": "Bob"
+  },
+  {
+   "instrument": "A-Git",
+   "name": "Tim",
+   "rollen": "A-Git",
+   "voll": "Tim Weiß"
+  },
+  {
+   "instrument": "Bass",
+   "name": "Rosa",
+   "rollen": "Bass",
+   "voll": "Rosa Schwarz"
+  },
+  {
+   "instrument": "Drums",
+   "name": "Karl",
+   "rollen": "Drums",
+   "voll": "Karl Schäfer"
+  }
+ ],
+ "kuerzel": "DD1",
+ "scene": {
+  "busse": [
+   {
+    "bus": 1,
+    "name": "Paula"
+   },
+   {
+    "bus": 2,
+    "name": "Tim"
+   },
+   {
+    "bus": 3,
+    "name": "Lisa"
+   },
+   {
+    "bus": 4,
+    "name": "Lena"
+   },
+   {
+    "bus": 5,
+    "name": "Rosa"
+   },
+   {
+    "bus": 7,
+    "name": "Ute"
+   },
+   {
+    "bus": 8,
+    "name": "Quentin"
+   },
+   {
+    "bus": 9,
+    "name": "Tim"
+   },
+   {
+    "bus": 10,
+    "name": "Bob"
+   },
+   {
+    "bus": 11,
+    "name": "Karl"
+   }
+  ],
+  "engpass": [],
+  "quellen": [
+   {
+    "kanal": 1,
+    "source": 1
+   },
+   {
+    "kanal": 2,
+    "source": 2
+   },
+   {
+    "kanal": 3,
+    "source": 3
+   },
+   {
+    "kanal": 4,
+    "source": 17
+   },
+   {
+    "kanal": 5,
+    "source": 4
+   },
+   {
+    "kanal": 6,
+    "source": 5
+   },
+   {
+    "kanal": 7,
+    "source": 6
+   },
+   {
+    "kanal": 8,
+    "source": 7
+   },
+   {
+    "kanal": 9,
+    "source": 9
+   },
+   {
+    "kanal": 10,
+    "source": 8
+   },
+   {
+    "kanal": 11,
+    "source": 19
+   },
+   {
+    "kanal": 13,
+    "source": 10
+   },
+   {
+    "kanal": 17,
+    "source": 21
+   },
+   {
+    "kanal": 18,
+    "source": 22
+   },
+   {
+    "kanal": 19,
+    "source": 23
+   },
+   {
+    "kanal": 20,
+    "source": 24
+   },
+   {
+    "kanal": 21,
+    "source": 25
+   },
+   {
+    "kanal": 22,
+    "source": 26
+   },
+   {
+    "kanal": 23,
+    "source": 27
+   },
+   {
+    "kanal": 24,
+    "source": 28
+   },
+   {
+    "kanal": 25,
+    "source": 29
+   },
+   {
+    "kanal": 26,
+    "source": 30
+   },
+   {
+    "kanal": 27,
+    "source": 31
+   },
+   {
+    "kanal": 28,
+    "source": 13
+   },
+   {
+    "kanal": 29,
+    "source": 12
+   },
+   {
+    "kanal": 30,
+    "source": 11
+   }
+  ],
+  "voc": [
+   {
+    "kanal": 1,
+    "name": "Paula",
+    "voc": 1
+   },
+   {
+    "kanal": 2,
+    "name": "Tim",
+    "voc": 2
+   },
+   {
+    "kanal": 3,
+    "name": "Lisa",
+    "voc": 3
+   },
+   {
+    "kanal": 4,
+    "name": "Ute",
+    "voc": 4
+   }
+  ]
+ },
+ "solo": [
+  {
+   "name": "Lena",
+   "rollen": "Geige",
+   "voll": "Lena"
+  }
+ ],
+ "vorne": [
+  {
+   "name": "Paula",
+   "rollen": "Piano, Voc",
+   "voll": "Paula Wolf"
+  },
+  {
+   "name": "Tim",
+   "rollen": "Voc",
+   "voll": "Tim"
+  },
+  {
+   "name": "Lisa",
+   "rollen": "Voc",
+   "voll": "Lisa"
+  },
+  {
+   "name": "Ute",
+   "rollen": "Voc",
+   "voll": "Ute Braun"
+  },
+  {
+   "name": "Quentin",
+   "rollen": "E-Git, Voc",
+   "voll": "Quentin Schröder"
+  }
+ ]
+}

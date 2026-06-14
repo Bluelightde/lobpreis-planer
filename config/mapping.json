@@ -1,0 +1,158 @@
+{
+  "_hinweis": "Anpassbarer Vorschlag, rollenbasiert (keine Namen). Layout = Zonen: VORNE (erste Reihe, Saalseite) = alle die singen + Leiter links; HINTEN = Instrumente; SOLO-PLATZ = Solo/Geige ohne Gesang, neben SB1. Alles ueber Koordinaten anpassbar, ohne Code zu aendern.",
+
+  "rollen_kurz": {
+    "MD": "MD",
+    "A-Git": "A-Git",
+    "E-Git": "E-Git",
+    "Piano": "Piano",
+    "Synth": "Synth",
+    "Solo": "Solo",
+    "Geige": "Geige",
+    "Bass": "Bass",
+    "Drums": "Drums",
+    "Gesang": "Voc"
+  },
+
+  "label_ausblenden": ["Lobpreisleitung", "Co-Leiter", "MD"],
+
+  "rollen_reihenfolge": ["Lobpreisleitung", "Co-Leiter", "MD", "Bass", "Drums", "A-Git", "E-Git", "Piano", "Synth", "Geige", "Solo", "Gesang"],
+
+  "sing_rollen": ["Gesang"],
+
+  "modus": {
+    "_hinweis": "Anordnungs-Modus (im UI editierbar).",
+    "leiter_links": true,
+    "reine_saenger_mitte": true,
+    "singende_instrumentalisten_vorne": true
+  },
+
+  "solo_instrument": {
+    "_hinweis": "In der Skizze wird 'Solo' als das tatsaechliche Instrument angezeigt. Standard = Geige, person-spezifische Ausnahmen unter 'personen'.",
+    "rolle": "Solo",
+    "standard": "Geige",
+    "personen": {}
+  },
+
+  "buehne": {
+    "_hinweis": "buehne_rect_id liefert die Buehnen-Grenzen (fuer die dynamische vordere Reihe). entfernen_rect_ids = die Personen-Felder der Vorlage, die durch generierte ersetzt werden. Die uebrige Szenerie (SB1/SB2, Screen, MD/TS, Linien) bleibt erhalten.",
+    "buehne_rect_id": "K_ipJ7WHp__WMfi8JYyqD",
+    "dimensionen": { "_hinweis": "Optionaler Override der Buehnen-Groesse (UI). Leer/fehlend = Maß aus der Vorlage. breite/hoehe in Excalidraw-Einheiten.", "breite": null, "hoehe": null },
+    "entfernen_rect_ids": [
+      "itC1D_FoE43PsoBvyqbyA",
+      "XrDBobV0HxdsjSWQsmOp4",
+      "C-TN6uotEu0DR-lKeLUJS",
+      "2GZ7sB9QUh3fkVU70-eJD",
+      "DQ7Y1tMmwiAnFU8lmpHcv",
+      "Mvwmy7sR9RjPGGTM6af5f"
+    ],
+    "box_stil": { "rect_id_vorlage": "DQ7Y1tMmwiAnFU8lmpHcv", "text_id_vorlage": "qe-n-vLJohgF7MAYSxoCN" },
+
+    "fixe_elemente": {
+      "_hinweis": "Vorlagen-Elemente (Stageboxen), die per Drag im UI verschiebbar sind. rect = Hauptrechteck (gebundener Text folgt automatisch), linien = mitzuziehende Verbindungslinien. Verschiebung landet in positionen[<Schluessel>] und ist rein kosmetisch (Routing folgt weiterhin der X-Position der Personen).",
+      "SB1": { "rect": "TQF0W0TEn4XQYMMaTMP8n", "linien": ["ME9sSuQCIL_XB5PyOtAqV", "mh4gjulVIvqdG4qS_r76Y", "FoGcrcZ2jnyF8cfa8Do09"] },
+      "SB2": { "rect": "G8BhwB5MuPPjriW21kDeK", "linien": ["zl8YrMgm8OGbDOGnpccZ_", "czJ7Fjlpxz0HukWNvBygj", "h9SERtxRoB5uiVzI4ATRc"] }
+    },
+
+    "leiter_rolle": "Lobpreisleitung",
+    "instrument_rollen": ["Bass", "Drums", "A-Git", "E-Git", "Piano", "Synth", "Geige"],
+
+    "kreise": [
+      {
+        "_hinweis": "MD-Kreis neben der MD-Person (nicht im Feld-Text).",
+        "text": "MD", "rolle": "MD",
+        "ellipse_id_vorlage": "zf6L0epHBoebrnTfeljvq",
+        "text_id_vorlage": "671Pe5ldQrt5LKaC0ydUP",
+        "groesse": 50, "abstand": 12, "offset_y": 66
+      },
+      {
+        "_hinweis": "TS-Kreis (Teamspeak) immer beim Lobpreisleiter.",
+        "text": "TS", "rolle": "Lobpreisleitung",
+        "ellipse_id_vorlage": "CZRN_jvmSkshAxx4vMVbl",
+        "text_id_vorlage": "ouU10iHarI3RdHLp9V6gy",
+        "groesse": 50, "abstand": 12
+      }
+    ],
+
+    "solo_platz": {
+      "_hinweis": "Fuer Personen mit Solo/Geige, die NICHT singen: rechts neben SB1, zwischen Bass und Leiter. Mehrere werden nach unten gestapelt.",
+      "rollen": ["Solo", "Geige"],
+      "x": 390, "y": 470, "w": 150, "h": 60, "stapel_dy": 70
+    },
+
+    "ausweichen_nur_mit_rolle": "Synth",
+
+    "backline_reihenfolge": ["Drums", "Bass", "E-Git", "A-Git", "Piano", "Synth"],
+    "backline": {
+      "_hinweis": "Feste Positionen hinten. immer=true => Person bleibt hier, auch wenn sie singt (Drums/Bass). immer=false => nur hinten, wenn die Person NICHT singt; sonst vorne. Die in 'unter_drums' gelisteten Rollen werden stattdessen unter die Drums gestapelt. ausweichen_solo_platz=true => weicht auf den freien Geige-/Solo-Platz aus (nur wenn 'ausweichen_nur_mit_rolle' in der Band ist).",
+      "Drums": { "x": 760, "y": 225, "w": 270, "h": 130, "immer": true },
+      "Bass":  { "x": 285, "y": 290, "w": 150, "h": 58,  "immer": true },
+      "A-Git": { "x": 820, "y": 400, "w": 150, "h": 58,  "immer": false, "ausweichen_solo_platz": true },
+      "E-Git": { "x": 820, "y": 400, "w": 150, "h": 58,  "immer": false, "ausweichen_solo_platz": true },
+      "Piano": { "x": 285, "y": 352, "w": 150, "h": 58,  "immer": false },
+      "Synth": { "x": 820, "y": 400, "w": 150, "h": 58,  "immer": false, "backline_ab_saengern": 5 }
+    },
+    "unter_drums": {
+      "_hinweis": "Diese Instrumente stehen (wenn backline / nicht singend) UEBEREINANDER unter den Drums (z-Stapel, ueberlappend, je um stapel_versatz Pixel diagonal versetzt). Im UI bringt ein Klick die naechste Ebene nach vorn -> immer genau ein Label oben lesbar.",
+      "rollen": ["A-Git", "E-Git", "Piano", "Synth"],
+      "offset_y": 55, "stapel_versatz": 6, "w": 150, "h": 58
+    },
+
+    "vorne": {
+      "_hinweis": "Erste Reihe, dynamisch ueber die Buehnenbreite verteilt (Leiter zuerst = links). Box-Breite schrumpft bei vielen Personen, fester Abstand 'luecke' verhindert Ueberlappung, 'rand' haelt Abstand zum Buehnenrand.",
+      "y": 650, "h": 62, "min_box_w": 135, "max_box_w": 175, "rand": 35, "luecke": 18
+    }
+  },
+
+  "scene": {
+    "_hinweis": "X32-Szene wird an die Besetzung angepasst: Vox1-4 -> Saengernamen; Kanal-Source aus Excel-Spalte D (A-Nummer, ergibt sich aus SB1/SB2); Bus-Namen aus Monitor-Spalte J/K. kanal_zu_excelzeile: Scene-Kanal -> Excel-Eingangszeile (fuer die Source).",
+    "vorlage": "Standard.scn",
+    "voc_kanaele": [1, 2, 3, 4],
+    "kanal_zu_excelzeile": {
+      "1": 5, "2": 6, "3": 7, "4": 8,
+      "5": 10, "6": 11, "7": 12, "8": 13,
+      "9": 15, "10": 14, "11": 16,
+      "13": 18,
+      "17": 23, "18": 24, "19": 25, "20": 26, "21": 27, "22": 28,
+      "23": 29, "24": 30, "25": 31, "26": 32, "27": 33,
+      "28": 38, "29": 37, "30": 36, "31": 34, "32": 35
+    }
+  },
+
+  "excel": {
+    "_hinweis": "Aus der SKIZZE abgeleitet. SB1/SB2-Nummern: jedes vorhandene Instrument bekommt anhand seiner Position (links/rechts der Buehnenmitte) eine Nummer in SB1 (Spalte F) oder SB2 (Spalte G); pro Stagebox wird in Zeilenreihenfolge neu durchnummeriert. Fehlende Instrumente werden geleert. Saenger (Gesang 1..4) kommen als Vorname in Spalte C (Voc1-4) und in den Monitor-Output J; ihre Seite richtet sich nach der X-Position in der Skizze.",
+    "blatt": "Übersicht",
+    "namensformat": "vorname",
+    "sb_spalten": { "SB1": "F", "SB2": "G" },
+    "stagebox_kapazitaet": 16,
+    "bezeichnung_spalte": "C",
+    "voc": {
+      "gesang_rolle": "Gesang",
+      "zeilen": [5, 6, 7, 8, 9]
+    },
+    "monitor": {
+      "_hinweis": "Monitor-Outputs (Spalte J) nach Skizzen-Seite: links -> J5-9 (SB1-Mixe), rechts -> J13-18 (SB2-Mixe). links_bus/rechts_bus = zugehoeriger X32-Bus (aus Spalte K 'Mix N') fuer die Scene-Bus-Namen.",
+      "links": ["J5", "J6", "J7", "J8", "J9"],
+      "rechts": ["J13", "J14", "J15", "J16", "J17", "J18"],
+      "links_bus": [1, 2, 3, 4, 5],
+      "rechts_bus": [7, 8, 9, 10, 11, 12]
+    },
+    "instrumente": [
+      { "rollen": ["Synth"], "zeilen": [10, 11] },
+      { "rollen": ["Piano"], "zeilen": [12, 13] },
+      { "rollen": ["Bass"], "zeilen": [14] },
+      { "rollen": ["A-Git"], "zeilen": [15] },
+      { "rollen": ["E-Git"], "zeilen": [16, 17] },
+      { "rollen": ["Geige"], "zeilen": [18], "solo_instrument": "Geige" },
+      { "rollen": ["Bratsche"], "zeilen": [19], "solo_instrument": "Bratsche" },
+      { "rollen": ["Drums"], "zeilen": [23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33] }
+    ],
+    "technik": [
+      { "zeilen": [36, 37, 38], "seite": "SB1" }
+    ],
+    "aus_zeilen": [],
+    "track": { "_hinweis": "Optionale Playback-Eingaenge (Track + Track Klick), per UI-Schalter zuschaltbar. dynamisch=true => auf die Stagebox mit mehr Platz; sonst fest auf 'seite'.", "zeilen": [34, 35], "dynamisch": true, "seite": "SB2" },
+    "track_aktiv": false,
+    "alt_namen_leeren": ["V5", "V6", "V7", "V8", "AC5", "AC6", "AC7"]
+  }
+}
