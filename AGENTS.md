@@ -96,7 +96,7 @@ Every move is reported in `bericht["balance"]` and surfaced in CLI/UI.
 - **No package manager, no lockfile.** Don't introduce one.
 - **No build step for `web/`.** Vanilla ES modules served as static files
   (`<script type="module" src="/app.js">`). No bundler, no `node_modules`.
-- **No CI configuration** in the repo. The user runs tests locally.
+- **CI**: GitHub Actions runs the stdlib tests + JS syntax check on push/PR (`.github/workflows/tests.yml`); tests still run locally too. No other CI tooling.
 - **Browser-tested** with Chromium-based browsers. No PWA, no service worker.
 - **No external Python services.** `churchtools.py` uses `urllib.request`.
 
@@ -110,10 +110,10 @@ Python**, when behaviour should change without a code change.
 | File | Purpose | VCS? |
 |---|---|---|
 | `config/mapping.json` | Main config: `buehne.*`, `excel.*`, `scene.*`, `rollen_kurz`, `rollen_reihenfolge`, `solo_instrument`. Holds the **fixed Excalidraw element IDs** the pipeline looks up. | ✅ |
-| `config/einstellungen.json` | UI overrides: `modus`, dragged positions (`buehne.positionen`, incl. `SB1`/`SB2`), `buehne.dimensionen` (stage size), `excel.track_aktiv`, `excel.stagebox_kapazitaet`. Loaded via **Deep-Merge** over `mapping.json` by `lade_konfig`. | ⚠️ Allowed but ignored (commented-out in `.gitignore`). |
+| `config/einstellungen.json` | UI overrides: `modus`, dragged positions (`buehne.positionen`, incl. `SB1`/`SB2`), `buehne.dimensionen` (stage size), `excel.track_aktiv`, `excel.stagebox_kapazitaet`. Loaded via **Deep-Merge** over `mapping.json` by `lade_konfig`. | ❌ gitignored (lokale UI-Overrides). |
 | `config/spitznamen.json` | `Voller Name → Spitzname` (shown in sketch + Excel). **Persoenliche Daten — gitignored**; Format-Vorlage: `config/spitznamen.example.json`. | ❌ |
 | `config/solo_personen.json` | `Voller Name → Solo-Instrument` (e.g. `Bratsche`). **Persoenliche Daten — gitignored**; Format-Vorlage: `config/solo_personen.example.json`. | ❌ |
-| `config/config.json` | `base_url`, `token`, `gruppe`. **Secret** — gitignored. | ❌ |
+| `config/config.json` | `base_url`, `token`, `gruppe`. **Secret** — gitignored; Format-Vorlage: `config/config.example.json`. | ❌ |
 
 **Two ways to read config:**
 
@@ -161,8 +161,8 @@ clear list on mismatch — don't suppress it, fix the mismatch.
 | `werkzeuge/setlisten_check.py` | CLI: audit recent setlists against heuristics (caches under `.cache/`) |
 
 For a long-form architectural view with Mermaid diagrams, see `ARCHITEKTUR.md`.
-For deeper per-symbol index, see `CLAUDE.md` (slightly outdated line numbers —
-the line counts drift, the symbol names don't).
+For deeper per-symbol index, see `CLAUDE.md` (symbol names + purpose, without
+line numbers).
 
 ---
 

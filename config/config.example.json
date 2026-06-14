@@ -1,0 +1,7 @@
+{
+  "base_url": "https://deine-instanz.church.tools",
+  "gruppe": "Lobpreis",
+  "token": "DEIN_CHURCHTOOLS_LOGIN_TOKEN",
+  "markier_dienst": "",
+  "ssl_verify": true
+}

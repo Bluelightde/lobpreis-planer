@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Python-Tests (stdlib unittest, keine Zusatzpakete)
+        run: |
+          python3 tests/test_plane.py
+          python3 tests/test_invariantes.py
+          python3 tests/test_churchtools.py
+          python3 tests/test_setlisten_check.py
+          python3 tests/test_ui_e2e.py
+
+      - name: JS-Syntaxcheck (kein Bundler)
+        run: node --check web/app.js && node --check web/ct.js && node --check web/ui.js

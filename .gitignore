@@ -11,7 +11,7 @@ ausgabe/
 .cache/
 
 # persoenliche Einstellungen (optional)
-# config/einstellungen.json
+config/einstellungen.json
 
 # Bilder / Screenshots ausschließen
 *.png

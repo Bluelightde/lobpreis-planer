@@ -244,6 +244,10 @@ Einfach mehrere Dateien in `besetzungen/` ablegen und nacheinander aufrufen:
 for f in besetzungen/*.txt; do python3 lobpreis_planer.py "$f"; done
 ```
 
+Die mitgelieferten `besetzungen/DD1.txt` und `besetzungen/besetzung_1`…`besetzung_10`
+sind **frei erfundene Beispiel-Eingaben** zum Ausprobieren — keine echten Personen.
+`DD1.txt` ist das kanonische Beispiel (auch in Tests und CLI-Aufrufen).
+
 ## Lizenz
 
 MIT — siehe [LICENSE](LICENSE). Beispiel-Besetzungen und Spitznamen im Repo sind

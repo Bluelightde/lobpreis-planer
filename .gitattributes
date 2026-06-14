@@ -1,0 +1,28 @@
+# Zeilenenden plattformuebergreifend normalisieren.
+* text=auto
+
+# Shell-/Unix-Starter brauchen LF (sonst bricht der Start auf Windows-Clones).
+*.sh        text eol=lf
+*.command   text eol=lf
+*.py        text eol=lf
+*.js        text eol=lf
+*.css       text eol=lf
+*.html      text eol=lf
+*.json      text eol=lf
+*.md        text eol=lf
+*.svg       text eol=lf
+
+# Windows-Starter brauchen CRLF.
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+# Text-Vorlagen: LF erzwingen, aber diffbar lassen (werden geklont + gepatcht).
+*.scn        text eol=lf
+*.excalidraw text eol=lf
+
+# Echte Binaerdateien: kein EOL-/Diff-Handling.
+*.xlsx  binary
+*.ico   binary
+*.icns  binary
+*.png   binary

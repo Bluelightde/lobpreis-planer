@@ -120,86 +120,86 @@ Architektur-Diagramme: siehe `ARCHITEKTUR.md`.
 
 **`lp_konfig.py`** (Konstanten, Deep-Merge, atomares Schreiben, Lader/Speicherer):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `BASIS` / `KONFIG` / … / `AUSGABE` | 14–27 | Pfad-Konstanten |
-| `M` | 30 | Excel-Namespace |
-| `KUERZEL` | 33 | Regex für Dienst-Kürzel (DD1 etc.) |
-| `_deep_merge` | 36 | rekursives Dict-Merging |
-| `_schreibe_json_atomar` | 61 | atomares JSON-Schreiben unter Lock |
-| `lade_konfig` / `lade_einstellungen` | 84 / 45 | Konfig laden (mit Deep-Merge) |
-| `lade_churchtools` / `speichere_churchtools` | 90 / 100 | CT-Config |
-| `lade_spitznamen` / `speichere_spitznamen` | 104 / 109 | Spitznamen |
-| `lade_solo_personen` / `speichere_solo_personen` | 113 / 118 | Solo-Instrumente pro Person |
+| Symbol | Zweck |
+|---|---|
+| `BASIS` / `KONFIG` / … / `AUSGABE` | Pfad-Konstanten |
+| `M` | Excel-Namespace |
+| `KUERZEL` | Regex für Dienst-Kürzel (DD1 etc.) |
+| `_deep_merge` | rekursives Dict-Merging |
+| `_schreibe_json_atomar` | atomares JSON-Schreiben unter Lock |
+| `lade_konfig` / `lade_einstellungen` | Konfig laden (mit Deep-Merge) |
+| `lade_churchtools` / `speichere_churchtools` | CT-Config |
+| `lade_spitznamen` / `speichere_spitznamen` | Spitznamen |
+| `lade_solo_personen` / `speichere_solo_personen` | Solo-Instrumente pro Person |
 
 **`lp_parsing.py`** (Eingabe-Parsing):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `parse_besetzung` / `parse_besetzung_text` | 10 / 16 | Besetzungstext → eintraege, kuerzel |
-| `personen_aus_eintraegen` | 56 | Eintraege pro Person bündeln |
+| Symbol | Zweck |
+|---|---|
+| `parse_besetzung` / `parse_besetzung_text` | Besetzungstext → eintraege, kuerzel |
+| `personen_aus_eintraegen` | Eintraege pro Person bündeln |
 
 **`lp_personen.py`** (Namens-Helfer):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `vorname` / `anzeige_name` | 7 / 11 | Anzeigename (Spitzname/Vorname) |
-| `kurz_rolle` / `label_fuer_person` | 21 / 31 | Rollen-Kurzform / Feld-Label |
-| `_singt` | 57 | Prüft ob Person singt |
+| Symbol | Zweck |
+|---|---|
+| `vorname` / `anzeige_name` | Anzeigename (Spitzname/Vorname) |
+| `kurz_rolle` / `label_fuer_person` | Rollen-Kurzform / Feld-Label |
+| `_singt` | Prüft ob Person singt |
 
 **`lp_layout.py`** (Zonen-Zuordnung + Box-Positionen):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `zuordnen` | 11 | Zonen-Layout vorne/hinten/solo |
-| `berechne_layout` | 116 | Box-Positionen (Quelle der Wahrheit) |
+| Symbol | Zweck |
+|---|---|
+| `zuordnen` | Zonen-Layout vorne/hinten/solo |
+| `berechne_layout` | Box-Positionen (Quelle der Wahrheit) |
 
 **`lp_skizze.py`** (Excalidraw-Generierung):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `_mache_box` / `_mache_kreis` | 12 / 45 | Excalidraw-Elemente klonen |
-| `erzeuge_skizze_doc` | 65 | Komplettes Excalidraw-Dokument |
+| Symbol | Zweck |
+|---|---|
+| `_mache_box` / `_mache_kreis` | Excalidraw-Elemente klonen |
+| `erzeuge_skizze_doc` | Komplettes Excalidraw-Dokument |
 
 **`lp_excel.py`** (Excel-Belegungsplan):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `_sheet_datei_fuer_blatt` | 31 | Worksheet-XML im ZIP finden |
-| `_fuelle_zelle` / `_set_zelle_inline` | 52 / 66 | Zellen im XML setzen |
-| `berechne_excel_werte` | 97 | Excel-Werte + Auto-Balance SB1/SB2 |
-| `erzeuge_excel_bytes` | 293 | X32-Belegungsplan .xlsx |
+| Symbol | Zweck |
+|---|---|
+| `_sheet_datei_fuer_blatt` | Worksheet-XML im ZIP finden |
+| `_fuelle_zelle` / `_set_zelle_inline` | Zellen im XML setzen |
+| `berechne_excel_werte` | Excel-Werte + Auto-Balance SB1/SB2 |
+| `erzeuge_excel_bytes` | X32-Belegungsplan .xlsx |
 
 **`lp_scene.py`** (X32-Szene + SVG):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `_scn_set_name` / `_scn_set_source` / `_scn_set_bus_name` | 16 / 22 / 28 | .scn-Zeilen patchen |
-| `erzeuge_scene` | 34 | X32-Szene .scn |
-| `render_svg` | 136 | SVG-Vorschau fürs UI |
+| Symbol | Zweck |
+|---|---|
+| `_scn_set_name` / `_scn_set_source` / `_scn_set_bus_name` | .scn-Zeilen patchen |
+| `erzeuge_scene` | X32-Szene .scn |
+| `render_svg` | SVG-Vorschau fürs UI |
 
 **`lobpreis_planer.py`** (Orchestrator, Re-Exports, CLI):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `VorlagenFehler` | 37 | Exception für kaputte Vorlagen |
-| `pruefe_vorlagen` | 41 | Vorlagen-Selbstcheck beim Start |
-| `plane` | 99 | High-Level-Orchestrator (CLI + UI) |
-| `main` | 154 | CLI-Einstieg |
+| Symbol | Zweck |
+|---|---|
+| `VorlagenFehler` | Exception für kaputte Vorlagen |
+| `pruefe_vorlagen` | Vorlagen-Selbstcheck beim Start |
+| `plane` | High-Level-Orchestrator (CLI + UI) |
+| `main` | CLI-Einstieg |
 
-**`churchtools.py`** (REST-Anbindung; Regexe `_STIMME_PREFIX` 175, `_INSTRUMENTE` 180, `_NEG_VOR` 188):
+**`churchtools.py`** (REST-Anbindung; Regexe `_STIMME_PREFIX`, `_INSTRUMENTE`, `_NEG_VOR`):
 
-| Symbol | Zeile | Zweck |
-|---|---|---|
-| `CT` (Klasse) | 25 | HTTP-Client; `get`/`events`/`event`/`agenda` |
-| `whoami` | 81 | Person-ID des Tokens |
-| `termin_liste` | 90 | Termine [von,bis] für Auswahl |
-| `besetzung_text` | 140 | Dienste → Besetzungstext |
-| `_instrumente_aus` / `_ist_bemerkung` | 191 / 202 | Notiz-Parsing-Helfer |
-| `setliste_text` | 214 | Ablaufplan → Setliste (Stimme/Instrument/Bemerkung) |
+| Symbol | Zweck |
+|---|---|
+| `CT` (Klasse) | HTTP-Client; `get`/`events`/`event`/`agenda` |
+| `whoami` | Person-ID des Tokens |
+| `termin_liste` | Termine [von,bis] für Auswahl |
+| `besetzung_text` | Dienste → Besetzungstext |
+| `_instrumente_aus` / `_ist_bemerkung` | Notiz-Parsing-Helfer |
+| `setliste_text` | Ablaufplan → Setliste (Stimme/Instrument/Bemerkung) |
 
-**`ui.py`** (Webserver): `Handler` 51 (Routen in `do_GET`/`do_POST`; Endpunkte siehe `ARCHITEKTUR.md` §2), `_serve_static` 87, `_einstellungen_slice` 102, `main` 281.
+**`ui.py`** (Webserver): `Handler` (Routen in `do_GET`/`do_POST`; Endpunkte siehe `ARCHITEKTUR.md` §2), `_serve_static`, `_einstellungen_slice`, `main`.
 
-**`web/app.js`** (Frontend): Kalender `renderKalender` 227 / `holeMonat` 157 / `zeigeTag` 197; Setliste `parseSetlisteText` 380 / `slAddRow` 302 / `renderMischModus` 344; Regeln `ladeRegeln` 501 / `speicherePosition` 549; `erzeugen` 574 (ruft `/api/erzeugen`).
+**`web/app.js`** (Frontend): Kalender `renderKalender` / `holeMonat` / `zeigeTag`; Setliste `parseSetlisteText` / `slAddRow` / `renderMischModus`; Regeln `ladeRegeln` / `speicherePosition`; `erzeugen` (ruft `/api/erzeugen`).
 
 **`werkzeuge/`**: `setlisten_check.py` — Setlisten-Anzeige kompakt gegen ChurchTools prüfen; `ct_dump.py` — Rohdaten (Events/Agenden) als lokale JSON-Fixtures ziehen (offline-Analyse/Tests).
