@@ -38,15 +38,11 @@ with open(L.KONFIG, encoding="utf-8") as _f:
     BASIS_CFG = json.load(_f)
 
 
-def _track_cfg():
-    cfg = copy.deepcopy(BASIS_CFG)
-    cfg.setdefault("excel", {})["track_aktiv"] = True
-    return cfg
+
 
 
 # (Name, Besetzungs-Text, Optionen) -- Optionen=None => Basis-Mapping, kein Override.
-# Optionen-dict: {"track": True} schaltet die Track-Eingaenge zu;
-#                {"solo_personen": {...}} setzt person-spezifische Solo-Instrumente.
+# Optionen-dict: {"solo_personen": {...}} setzt person-spezifische Solo-Instrumente.
 FAELLE = [
     ("dd1_standard", """
 Lobpreisleitung DD1: Emma Meier
@@ -139,7 +135,7 @@ Gesang DD1 5: D
 Gesang DD1 6: E
 """, None),
 
-    # Track + Track Klick aktiv -> 2 zusaetzliche Eingaenge, zusammen auf freiere Box
+    # Track + Track Klick aktiv (Multitrack in der Besetzung) -> 2 zusaetzliche
     ("track_aktiv", """
 Gesang DD1 1: Tim
 Gesang DD1 5: Lisa
@@ -156,7 +152,8 @@ Gesang DD1 4: Ute Braun
 MD DD1: Rosa Schwarz
 Lobpreisleitung DD1: Paula Wolf
 Co-Leiter DD1: Quentin Schröder
-""", {"track": True}),
+Multitrack DD1: Ute Braun
+""", None),
 
     # Zwei nicht-singende Solisten (Solo + Geige) -> beide auf den Solo-Platz
     # gestapelt; keine Gitarren-Ausweichregel (Solo-Platz belegt).
@@ -207,7 +204,7 @@ SNAP_KEYS = ("kuerzel", "vorne", "hinten", "solo", "excel", "scene")
 
 def _plane(text, opts):
     opts = opts or {}
-    cfg = _track_cfg() if opts.get("track") else copy.deepcopy(BASIS_CFG)
+    cfg = copy.deepcopy(BASIS_CFG)
     return L.plane(text.strip(), cfg, {}, opts.get("solo_personen") or {})
 
 
@@ -474,6 +471,132 @@ class RegenTests(unittest.TestCase):
                     if int(b["bus"]) == ziel), None)
         self.assertIsNotNone(neu, "Bus fehlt im Bericht")
         self.assertEqual(neu["name"], "MONITOR-NEU")
+
+
+# ---------------------------------------------------------------------------
+# Multitrack-Tests: Rolle "Multitrack" in der Besetzung aktiviert automatisch
+# die Track-Eingaenge (track_aktiv=True) und erscheint als Label in der Skizze.
+# ---------------------------------------------------------------------------
+
+class MultitrackTests(unittest.TestCase):
+    """Multitrack in der Besetzung -> track_aktiv wird automatisch True."""
+    maxDiff = None
+
+    MULTITRACK_TEXT = """
+Lobpreisleitung DD1: Emma Meier
+Gesang DD1 1: Tim Schmidt
+Multitrack DD1: Alex Doe
+"""
+
+    KEIN_MULTITRACK_TEXT = """
+Lobpreisleitung DD1: Emma Meier
+Gesang DD1 1: Tim Schmidt
+Bass DD1: Alex Doe
+"""
+
+    def test_multitrack_aktiviert_track(self) -> None:
+        """Multitrack in der Besetzung -> track_aktiv=True im Ergebnis."""
+        r = L.plane(self.MULTITRACK_TEXT.strip(),
+                    copy.deepcopy(BASIS_CFG), {}, {})
+        self.assertTrue(r.get("track_aktiv"),
+                        "track_aktiv sollte True sein bei Multitrack in der Besetzung")
+
+    def test_kein_multitrack_deaktiviert_track(self) -> None:
+        """Ohne Multitrack bleibt track_aktiv=False (Basis-Mapping-Default)."""
+        r = L.plane(self.KEIN_MULTITRACK_TEXT.strip(),
+                    copy.deepcopy(BASIS_CFG), {}, {})
+        self.assertFalse(r.get("track_aktiv"),
+                         "track_aktiv sollte False sein ohne Multitrack")
+
+    def test_multitrack_track_inputs_present(self) -> None:
+        """Bei aktiviertem Track muessen die Track-Eingaenge in Excel belegt sein."""
+        r = L.plane(self.MULTITRACK_TEXT.strip(),
+                    copy.deepcopy(BASIS_CFG), {}, {})
+        track_inputs = [i for i in r["excel"]["inputs"]
+                        if i.get("label") and "Track" in (i.get("label") or "")]
+        self.assertGreaterEqual(len(track_inputs), 2,
+                                "Track + Track Klick muessen belegt sein")
+        for ti in track_inputs:
+            self.assertTrue(ti.get("sb1") or ti.get("sb2"),
+                             f"Track-Eingang {ti.get('label')} hat keine SB-Nummer")
+
+    def test_multitrack_person_landet_vorne(self) -> None:
+        """Multitrack ist keine Backline-Rolle -> Person landet in der vorderen Reihe."""
+        r = L.plane(self.MULTITRACK_TEXT.strip(),
+                    copy.deepcopy(BASIS_CFG), {}, {})
+        vorne_namen = [p["voll"] for p in r["vorne"]]
+        self.assertIn("Alex Doe", vorne_namen,
+                      "Multitrack-Person muss vorne stehen")
+
+    def test_multitrack_label_erscheint(self) -> None:
+        """Das Label der Multitrack-Person enthaelt 'Multitrack' als Rollen-Kurzform."""
+        r = L.plane(self.MULTITRACK_TEXT.strip(),
+                    copy.deepcopy(BASIS_CFG), {}, {})
+        mt = next(p for p in r["vorne"] if p["voll"] == "Alex Doe")
+        self.assertIn("Multitrack", mt["rollen"],
+                      "Multitrack muss im Rollen-Label erscheinen")
+
+    def test_unbesetztes_multitrack_aktiviert_nicht(self) -> None:
+        """Ein unbesetztes Multitrack ('?') darf track_aktiv NICHT aktivieren."""
+        text = "Multitrack DD1: ?\nGesang DD1 1: Tim\n"
+        r = L.plane(text.strip(), copy.deepcopy(BASIS_CFG), {}, {})
+        self.assertFalse(r.get("track_aktiv"),
+                         "Unbesetztes Multitrack darf track_aktiv nicht setzen")
+
+    def test_track_wird_zurueckgesetzt_ohne_multitrack(self) -> None:
+        """Wurde track_aktiv durch Multitrack aktiviert, muss eine nachfolgende
+           Besetzung OHNE Multitrack track_aktiv wieder auf False setzen
+           (track_aktiv wird bei jedem plane()-Lauf aus der Besetzung bestimmt)."""
+        cfg = copy.deepcopy(BASIS_CFG)
+        cfg.setdefault("excel", {})["track_aktiv"] = True  # simuliert: vorher aktiviert
+        r = L.plane(self.KEIN_MULTITRACK_TEXT.strip(), cfg, {}, {})
+        self.assertFalse(r.get("track_aktiv"),
+                         "track_aktiv muss False sein, wenn die neue Besetzung keinen Multitrack hat")
+
+
+# ---------------------------------------------------------------------------
+# Box-Breite-Tests: _label_breite schaetzt grosszuegig genug, dass Text nicht
+# ueber den Box-Rand ragt (generell, nicht nur fuer Multitrack).
+# ---------------------------------------------------------------------------
+
+class LabelBreiteTests(unittest.TestCase):
+    """_label_breite muss grosszuegig genug schaetzen, damit der Text in der
+       Excalidraw-Box Platz hat und nicht ueber den Rand ragt."""
+    maxDiff = None
+
+    def test_kurz_label_passt(self) -> None:
+        """Kurzes Label (z.B. 'Voc') braucht weniger als min_box_w."""
+        from lp_layout import _label_breite
+        w = _label_breite("Emma\nVoc")
+        self.assertGreater(w, 0)
+        self.assertLess(w, 200, "Kurzes Label sollte unter 200px bleiben")
+
+    def test_lang_label_hat_reserve(self) -> None:
+        """Laengeres Label (z.B. 'Multitrack') muss genug Reserve haben."""
+        from lp_layout import _label_breite
+        w = _label_breite("Alex\nMultitrack")
+        # Multitrack = 10 Zeichen, bei char=0.7, fontsize=20, pad=32:
+        # 10 * 20 * 0.7 + 32 = 172
+        self.assertGreaterEqual(w, 170,
+                                "Multitrack-Label muss breit genug geschaetzt werden")
+
+    def test_mehrzeilig_nimmt_laengste_zeile(self) -> None:
+        """Bei mehrzeiligen Labels wird die laengste Zeile fuer die Breite gemessen."""
+        from lp_layout import _label_breite
+        w_kurz = _label_breite("A\nB")
+        w_lang = _label_breite("A\nMultitrack")
+        self.assertGreater(w_lang, w_kurz,
+                           "Laengere Zeile muss breitere Box fordern")
+
+    def test_box_wachstum_in_konfig(self) -> None:
+        """box_wachstum muss in mapping.json gesetzt sein (groesser als default 130)."""
+        self.assertGreaterEqual(BASIS_CFG["buehne"].get("box_wachstum", 130), 170,
+                                "box_wachstum sollte >= 170 sein fuer breitere Boxen")
+
+    def test_max_box_w_in_konfig(self) -> None:
+        """max_box_w fuer die vordere Reihe muss grosszuegig genug sein."""
+        self.assertGreaterEqual(BASIS_CFG["buehne"]["vorne"]["max_box_w"], 190,
+                                "max_box_w sollte >= 190 sein fuer laengere Labels")
 
 
 if __name__ == "__main__":

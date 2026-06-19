@@ -60,6 +60,7 @@ def _schreibe_json_atomar(pfad: str, daten: Any) -> None:
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as f:
                 json.dump(daten, f, ensure_ascii=False, indent=1)
+                f.write("\n")
                 f.flush()
                 os.fsync(f.fileno())
             os.replace(tmp, pfad)  # atomar

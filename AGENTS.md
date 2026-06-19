@@ -42,6 +42,12 @@ Text ─► parse_besetzung_text        → eintraege, kuerzel
      ─► render_svg                  → SVG-Vorschau fürs UI
 ```
 
+The UI also exposes a second, narrower path: `/api/regenerate` calls
+`lobpreis_planer.regeneriere_excel_und_scene()`, which re-renders Excel and the
+scene from edited patch-list values (`setzwerte`) **without** re-running the
+layout engine. This keeps manual UI edits to channel names / mic labels / SB slots
+intact while refreshing the downloadable artefacts.
+
 ### The single source of truth
 
 `layout` (returned by `berechne_layout` in `lp_layout.py`) is the **only**
@@ -68,13 +74,24 @@ exceed N, whole instrument/vocal **groups** closest to the midpoint get moved
 to the other box. Drums/Bass (`immer: true` in `buehne.backline`) stay fixed.
 Every move is reported in `bericht["balance"]` and surfaced in CLI/UI.
 
+### Track-Eingaenge via "Multitrack" (`plane()`)
+
+The role **`Multitrack`** in the Besetzung text (`Multitrack DD1: <Name>`)
+auto-enables the Track + Track Klick playback inputs (`excel.track`, rows 34/35).
+`plane()` derives `cfg["excel"]["track_aktiv"] = hat_multitrack` on **every** run
+(present → `True`, absent → `False`) and returns it as `track_aktiv` — a pure
+`cfg` value, **no file side-effect**. The UI checkbox `#trackAktiv` is a
+**disabled status indicator**: it mirrors `j.track_aktiv` after each `erzeugen()`,
+never written back. `Multitrack` is not a backline role; the person lands in the
+front row and only triggers the inputs (no own channel unless they also sing).
+
 ---
 
 ## 3. Key Directories
 
 | Path | Purpose |
 |---|---|
-| `lobpreis_planer.py` | Orchestrator: `plane()`, `pruefe_vorlagen()`, CLI. Re-exports the full public API. |
+| `lobpreis_planer.py` | Orchestrator: `plane()`, `pruefe_vorlagen()`, CLI, re-exports the public API. Also contains `regeneriere_excel_und_scene()` for the UI edit path. |
 | `churchtools.py` | ChurchTools REST client + `setliste_text` / `besetzung_text` parsers. |
 | `lp_*.py` | Pipeline stages (see § 6). One file per stage, all imported by the orchestrator. |
 | `ui.py` | `http.server` web server. JSON API + static file serving from `web/`. |
@@ -110,7 +127,7 @@ Python**, when behaviour should change without a code change.
 | File | Purpose | VCS? |
 |---|---|---|
 | `config/mapping.json` | Main config: `buehne.*`, `excel.*`, `scene.*`, `rollen_kurz`, `rollen_reihenfolge`, `solo_instrument`. Holds the **fixed Excalidraw element IDs** the pipeline looks up. | ✅ |
-| `config/einstellungen.json` | UI overrides: `modus`, dragged positions (`buehne.positionen`, incl. `SB1`/`SB2`), `buehne.dimensionen` (stage size), `excel.track_aktiv`, `excel.stagebox_kapazitaet`. Loaded via **Deep-Merge** over `mapping.json` by `lade_konfig`. | ❌ gitignored (lokale UI-Overrides). |
+| `config/einstellungen.json` | UI overrides: `modus`, dragged positions (`buehne.positionen`, incl. `SB1`/`SB2`), `buehne.dimensionen` (stage size), `excel.stagebox_kapazitaet`. Loaded via **Deep-Merge** over `mapping.json` by `lade_konfig`. (`excel.track_aktiv` is NOT persisted here — `plane()` derives it from the `Multitrack` role each run.) | ❌ gitignored (lokale UI-Overrides). |
 | `config/spitznamen.json` | `Voller Name → Spitzname` (shown in sketch + Excel). **Persoenliche Daten — gitignored**; Format-Vorlage: `config/spitznamen.example.json`. | ❌ |
 | `config/solo_personen.json` | `Voller Name → Solo-Instrument` (e.g. `Bratsche`). **Persoenliche Daten — gitignored**; Format-Vorlage: `config/solo_personen.example.json`. | ❌ |
 | `config/config.json` | `base_url`, `token`, `gruppe`. **Secret** — gitignored; Format-Vorlage: `config/config.example.json`. | ❌ |
@@ -147,14 +164,14 @@ clear list on mismatch — don't suppress it, fix the mismatch.
 
 | File | Key public symbols |
 |---|---|
-| `lobpreis_planer.py` | `plane()` (orchestrator), `pruefe_vorlagen()` (startup check), `main()` (CLI), `VorlagenFehler` |
-| `ui.py` | `Handler.do_GET` / `do_POST` (HTTP routes), `_einstellungen_slice` (form data), `main()` (server bootstrap) |
+| `lobpreis_planer.py` | `plane()` (orchestrator), `regeneriere_excel_und_scene()` (UI edit path), `pruefe_vorlagen()` (startup check), `main()` (CLI), `VorlagenFehler` |
+| `ui.py` | `Handler.do_GET` / `do_POST` (HTTP routes incl. `/api/regenerate`), `_einstellungen_slice` (form data), `main()` (server bootstrap) |
 | `lp_konfig.py` | Path constants, `KUERZEL` regex, `_deep_merge`, `_schreibe_json_atomar`, `lade_*` / `speichere_*` pairs |
 | `lp_parsing.py` | `parse_besetzung_text`, `personen_aus_eintraegen` |
 | `lp_personen.py` | `anzeige_name`, `label_fuer_person`, `kurz_rolle` |
 | `lp_layout.py` | `zuordnen` (zones), `berechne_layout` (**source of truth**) |
 | `lp_skizze.py` | `erzeuge_skizze_doc` (clones template, adds per-person boxes) |
-| `lp_excel.py` | `berechne_excel_werte` (incl. auto-balance), `erzeuge_excel_bytes` |
+| `lp_excel.py` | `berechne_excel_werte` (incl. auto-balance), `erzeuge_excel_bytes`, `setzwerte_zu_xlsx_bytes` (regenerate path) |
 | `lp_scene.py` | `erzeuge_scene` (patches `.scn`), `render_svg` (UI preview) |
 | `churchtools.py` | `CT` (HTTP client), `termin_liste`, `besetzung_text`, `setliste_text` |
 | `werkzeuge/ct_dump.py` | CLI: dump CT events/agendas as local JSON fixtures (offline) |
@@ -181,6 +198,7 @@ python3 tests/test_invariantes.py                     # A-number ranges, ≤16/b
 python3 tests/test_churchtools.py                     # Synthetic agenda fixtures for setliste_text
 python3 tests/test_setlisten_check.py                 # Heuristics in werkzeuge/setlisten_check.py
 python3 tests/test_ui_e2e.py                          # Spins up ui.py on a free port, hits the API
+python3 tests/test_konfig.py                          # Atomic JSON writer, deep-merge, config format
 
 # ---- JS syntax check (no bundler) ----
 node --check web/app.js web/ct.js web/ui.js
@@ -229,6 +247,9 @@ cannot send `Authorization` headers.
 - `plane()` is the **only** high-level entry. CLI and UI call it. Don't bypass
   it to call `erzeuge_excel_bytes` directly — you'll skip `render_svg` and
   miss the report.
+- The `/api/regenerate` path is the deliberate exception: it reuses the same
+  Excel/scene generators, but starts from `setzwerte` produced by the UI's
+  patch-list edits rather than from `layout`.
 - **Don't introduce a second source of truth.** If you find yourself computing
   stage-side from anything other than the X-position in `layout["plan"]`, stop.
 - New pipeline stages: add a new `lp_<stage>.py`, re-export the public symbols
@@ -294,6 +315,10 @@ cannot send `Authorization` headers.
   break `position: fixed` for the popover. Don't undo that move.
 - CT event cache: in-memory + `localStorage` with 12h TTL (`CACHE_TTL_MS`).
   Clear on token change (`cacheLeeren`).
+- The patch-list table (`web/ui.js`) supports keyboard navigation
+  (arrow keys) and edits to channel names, mic labels, and SB slots.
+  Edits are sent to `/api/regenerate`, which returns updated `.xlsx`/`.scn`
+  bytes without touching the layout.
 
 ### 8.8 ChurchTools parsing (`churchtools.py`)
 
@@ -329,11 +354,12 @@ cannot send `Authorization` headers.
 
 | File | Style | What it covers |
 |---|---|---|
-| `tests/test_plane.py` | Golden-file snapshots (`tests/snapshots/*.json`) of the **deterministic** parts of `plane()`: `kuerzel, vorne, hinten, solo, excel, scene`. | The 10 named scenarios in `FAELLE` (line 50): `dd1_standard`, `egit_ausweichen_solo`, `gitarre_neben_synth`, `kein_synth`, `fuenf_saenger`, `sechs_saenger_warnung`, `track_aktiv`, `zwei_solisten`, `bratsche`, `monitor_ueberlauf`. Plus artifact tests that re-read the generated `.xlsx`/`.scn` and snapshot the touched cells. |
+| `tests/test_plane.py` | Golden-file snapshots (`tests/snapshots/*.json`) of the **deterministic** parts of `plane()`: `kuerzel, vorne, hinten, solo, excel, scene`. | The 10 named scenarios in `FAELLE` (line 50): `dd1_standard`, `egit_ausweichen_solo`, `gitarre_neben_synth`, `kein_synth`, `fuenf_saenger`, `sechs_saenger_warnung`, `track_aktiv`, `zwei_solisten`, `bratsche`, `monitor_ueberlauf`. Plus artifact tests that re-read the generated `.xlsx`/`.scn` and snapshot the touched cells. Also covers `regeneriere_excel_und_scene()` with six regeneration scenarios. |
 | `tests/test_invariantes.py` | Property-based assertions across many inputs. | A-number range (1..16 for SB1, 17..32 for SB2), no duplicates within a box, ≤16/box after auto-balance, `stagebox1/2` mirrors `inputs`, `fehlend == []`, empty inputs don't crash, scene produced only when template exists. |
 | `tests/test_churchtools.py` | Synthetic agenda fixtures via `FakeCT`. | `setliste_text` covers: `responsible` as `str/dict.text/dict.persons/list`, vocal-prefix variants (incl. `Leadvoc`), `_instrumente_aus` dedup, `_NEG_VOR` ("ohne Drums"), remark detection, title fallback, deduplication, separator handling. **No real network.** |
 | `tests/test_setlisten_check.py` | Direct unit tests of `_pruefe_zeile` / `_letzte_klammer` / `_STOPWORTE`. | Heuristics: doppelte Trennzeichen, nicht entfernte Stimm-Praefixe, Stoppwörter (Alle/Chorus/Intro), Instrument-als-Stimme, `Voc:`-in-Bemerkung, `lead:`-Mehrfachprobleme, `Vox:`-Abkürzung. |
-| `tests/test_ui_e2e.py` | Spawns `ui.py` on a free port in-process, hits the API via `http.client`. | Static file serving, `/api/erzeugen` with `DD1.txt`, with arbitrary text, with empty text, 404 path, `/api/einstellungen`, `/api/spitznamen`, `/api/solo_personen`. |
+| `tests/test_ui_e2e.py` | Spawns `ui.py` on a free port in-process, hits the API via `http.client`. | Static file serving, `/api/erzeugen` with `DD1.txt`, with arbitrary text, with empty text, 404 path, `/api/einstellungen`, `/api/spitznamen`, `/api/solo_personen`, and `/api/regenerate` with edits. |
+| `tests/test_konfig.py` | Direct unit tests of `_schreibe_json_atomar` / `_deep_merge` / config file format. | Trailing newline on all written JSON, valid JSON roundtrip, UTF-8 (`ensure_ascii=False`), no leftover `.tmp` files, deep-merge semantics (scalar replace, dict recurse, list replace, in-place mutation), `einstellungen.json` format compliance. |
 
 ### Key conventions
 
@@ -348,6 +374,9 @@ cannot send `Authorization` headers.
   writers without checking in megabytes of fixtures.
 - `test_ui_e2e.py` is **self-contained**: it starts the server itself. Don't
   require a separately-running `ui.py` for CI/local runs.
+- **All JSON written by the program ends with `\n`**: `_schreibe_json_atomar`
+  appends a trailing newline (`lp_konfig.py:63`). Hand-edited JSON (`mapping.json`)
+  must too — `test_konfig.py` enforces both.
 
 ### Coverage expectations
 
@@ -374,6 +403,10 @@ branch coverage is owned by `test_churchtools.py` and
   config got out of sync — fix the mismatch, don't silence the check.
 - Do **not** write JSON config files directly. Use the `speichere_*` helpers
   in `lp_konfig.py` (atomic write + lock).
+- Do **not** write JSON config files without a trailing newline. The
+  `speichere_*` helpers in `lp_konfig.py` handle this automatically
+  (`_schreibe_json_atomar` appends `\n`). If you hand-edit a config JSON,
+  ensure it ends with `\n` — `test_konfig.py` enforces this.
 - Do **not** introduce English function/variable names. Keep the German style.
 - Do **not** ship a snapshot update without reading the diff. The snapshots
   in `tests/snapshots/` are the spec.

@@ -130,6 +130,26 @@ class UIEndToEndTests(unittest.TestCase):
         self.assertIn("stagebox_kapazitaet", data)
         self.assertIn("dimensionen", data)
 
+    def test_api_erzeugen_multitrack_setzt_track_aktiv(self):
+        """Multitrack in der Besetzung -> /api/erzeugen liefert track_aktiv=True."""
+        text = "Lobpreisleitung DD1: Anna\nGesang DD1 1: Anna\nMultitrack DD1: Bob"
+        status, body = self._post("/api/erzeugen", {"text": text, "name": "mt"})
+        self.assertEqual(status, 200)
+        data = json.loads(body)
+        self.assertTrue(data.get("ok"), f"Erwarte ok=True: {data}")
+        self.assertTrue(data.get("track_aktiv"),
+                        "track_aktiv muss True sein bei Multitrack in der Besetzung")
+
+    def test_api_erzeugen_ohne_multitrack_track_aktiv_false(self):
+        """Ohne Multitrack -> /api/erzeugen liefert track_aktiv=False."""
+        text = "Lobpreisleitung DD1: Anna\nGesang DD1 1: Anna\nBass DD1: Bob"
+        status, body = self._post("/api/erzeugen", {"text": text, "name": "ohne"})
+        self.assertEqual(status, 200)
+        data = json.loads(body)
+        self.assertTrue(data.get("ok"), f"Erwarte ok=True: {data}")
+        self.assertFalse(data.get("track_aktiv"),
+                         "track_aktiv muss False sein ohne Multitrack")
+
     def test_api_basis_skizze(self):
         status, body = self._get("/api/basis_skizze")
         self.assertEqual(status, 200)

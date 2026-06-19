@@ -117,6 +117,15 @@ def plane(
 
     eintraege, kuerzel = parse_besetzung_text(text)
     personen: list[dict[str, Any]] = personen_aus_eintraegen(eintraege, cfg["rollen_reihenfolge"])
+
+    # Multitrack in der Besetzung? -> Track-Eingaenge aktivieren.
+    # "Multitrack" ist keine Backline-Rolle; die Person landet vorne.
+    # track_aktiv wird bei JEDEM erzeugen() neu aus der Besetzung bestimmt:
+    # Multitrack vorhanden -> True, sonst -> False. Reiner cfg-Wert, kein
+    # Datei-Seiteneffekt; der UI-Schalter spiegelt nur das Ergebnis (track_aktiv).
+    hat_multitrack: bool = any(e.get("rolle") == "Multitrack" and e.get("name")
+                                for e in eintraege)
+    cfg.setdefault("excel", {})["track_aktiv"] = hat_multitrack
     zuord: dict[str, Any] = zuordnen(personen, bcfg, cfg.get("sing_rollen", ["Gesang"]),
                                       cfg.get("modus"))
     doc, layout = erzeuge_skizze_doc(zuord, cfg, spitznamen, return_layout=True,
@@ -159,6 +168,7 @@ def plane(
         "solo": solo,
         "excel": excel_bericht,
         "setzwerte": setzwerte,   # Zell-ref -> Wert, fuer den Regenerate-Pfad
+        "track_aktiv": bool((cfg.get("excel") or {}).get("track_aktiv", False)),
         "fehlend": fehlend,
         "skizze_doc": doc,
         "excel_bytes": excel_bytes,

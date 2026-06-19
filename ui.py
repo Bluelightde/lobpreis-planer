@@ -185,7 +185,6 @@ class Handler(BaseHTTPRequestHandler):
             "unter_drums": nimm(b.get("unter_drums", {}), ("offset_y", "rollen", "w", "h")),
             "solo_platz": nimm(b.get("solo_platz", {}), ("x", "y", "w", "h", "stapel_dy")),
             "vorne": nimm(b.get("vorne", {}), ("y", "h", "min_box_w", "max_box_w", "rand", "luecke")),
-            "track_aktiv": bool((cfg.get("excel") or {}).get("track_aktiv", False)),
             "stagebox_kapazitaet": int((cfg.get("excel") or {}).get("stagebox_kapazitaet", 16)),
             "dimensionen": {
                 "breite": round(dim.get("breite") if dim.get("breite") is not None else t_w),
@@ -367,6 +366,10 @@ class Handler(BaseHTTPRequestHandler):
         if pfad == "/api/einstellungen":
             try:
                 ein = L.lade_einstellungen()
+                # track_aktiv ist ein abgeleiteter Wert (Multitrack-Zeile), kein
+                # persistenter Override mehr -> Altlast aus aelteren Versionen entfernen.
+                if isinstance(ein.get("excel"), dict):
+                    ein["excel"].pop("track_aktiv", None)
                 ein.setdefault("buehne", {})
                 aktion = body.get("aktion")
                 if aktion == "form":
@@ -396,8 +399,6 @@ class Handler(BaseHTTPRequestHandler):
                     pos["vorne"] = {"y": body.get("y")}
                 elif aktion == "reset_positionen":
                     ein["buehne"].pop("positionen", None)
-                elif aktion == "track":
-                    ein.setdefault("excel", {})["track_aktiv"] = bool(body.get("aktiv"))
                 else:
                     return self._json({"ok": False, "error": "unbekannte Aktion"})
                 L.speichere_einstellungen(ein)
@@ -465,6 +466,7 @@ class Handler(BaseHTTPRequestHandler):
                 "solo": r["solo"],
                 "excel": r["excel"],
                 "setzwerte": r.get("setzwerte", {}),  # fuer /api/regenerate
+                "track_aktiv": r.get("track_aktiv", False),
                 "fehlend": r["fehlend"],
                 "svg": r["svg"],
                 "skizze_name": f"{name}_Skizze.excalidraw",

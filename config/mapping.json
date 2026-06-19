@@ -11,12 +11,12 @@
     "Geige": "Geige",
     "Bass": "Bass",
     "Drums": "Drums",
-    "Gesang": "Voc"
+    "Gesang": "Voc",
+    "Multitrack": "Multitrack"
   },
 
   "label_ausblenden": ["Lobpreisleitung", "Co-Leiter", "MD"],
-
-  "rollen_reihenfolge": ["Lobpreisleitung", "Co-Leiter", "MD", "Bass", "Drums", "A-Git", "E-Git", "Piano", "Synth", "Geige", "Solo", "Gesang"],
+  "rollen_reihenfolge": ["Lobpreisleitung", "Co-Leiter", "MD", "Bass", "Drums", "A-Git", "E-Git", "Piano", "Synth", "Geige", "Solo", "Multitrack", "Gesang"],
 
   "sing_rollen": ["Gesang"],
 
@@ -100,8 +100,9 @@
 
     "vorne": {
       "_hinweis": "Erste Reihe, dynamisch ueber die Buehnenbreite verteilt (Leiter zuerst = links). Box-Breite schrumpft bei vielen Personen, fester Abstand 'luecke' verhindert Ueberlappung, 'rand' haelt Abstand zum Buehnenrand.",
-      "y": 650, "h": 62, "min_box_w": 135, "max_box_w": 175, "rand": 35, "luecke": 18
-    }
+      "y": 650, "h": 62, "min_box_w": 135, "max_box_w": 195, "rand": 35, "luecke": 18
+    },
+    "box_wachstum": 170
   },
 
   "scene": {

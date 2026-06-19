@@ -370,20 +370,17 @@ export async function speicherePosition(key, x, y) {
     body: JSON.stringify(body)});
 }
 
-// Schalter: Track + Track (Klick) als Eingänge
+// Stagebox-Kapazitaet laden (fuer SB-Bereichspruefung). Der Track-Status wird
+// NICHT hier initialisiert: er ist ein abgeleiteter Wert (Multitrack-Zeile) und
+// wird nach jedem erzeugen() aus j.track_aktiv gesetzt. Initial bleibt der
+// (disabled) Schalter aus.
 (async () => {
   try {
     const s = await (await fetch('/api/einstellungen')).json();
-    document.getElementById('trackAktiv').checked = !!s.track_aktiv;
     KAP = s.stagebox_kapazitaet || 16;
     aktualisiereSbRange();
   } catch (e) {}
 })();
-document.getElementById('trackAktiv').addEventListener('change', async e => {
-  await fetch('/api/einstellungen', {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({aktion: 'track', aktiv: e.target.checked})});
-  if (LETZTES) erzeugen();   // bei vorhandenem Ergebnis sofort neu berechnen
-});
 
 function zeile(zellen) {
   const tr = document.createElement('tr');
@@ -650,6 +647,8 @@ export async function erzeugen() {
     document.getElementById('kuerzel').textContent = j.kuerzel ? ('Kürzel: '+j.kuerzel) : '';
     document.getElementById('svg').innerHTML = j.svg;
     initStapel('svg');
+    // Multitrack in der Besetzung? Server hat track_aktiv automatisch gesetzt.
+    document.getElementById('trackAktiv').checked = !!j.track_aktiv;
 
     const pt = document.querySelector('#tPersonen tbody'); pt.innerHTML = '';
     j.personen.forEach(p => pt.appendChild(zeile([esc(p.name), '<span class="hint">'+esc(p.rollen.join(', '))+'</span>'])));

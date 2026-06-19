@@ -108,10 +108,12 @@ def zuordnen(
 def _label_breite(
     label: str,
     fontsize: int = 20,
-    char: float = 0.6,
-    pad: int = 24
+    char: float = 0.7,
+    pad: int = 32
 ) -> float:
-    """Schaetzt die noetige Box-Breite fuer ein (mehrzeiliges) Label."""
+    """Schaetzt die noetige Box-Breite fuer ein (mehrzeiliges) Label.
+       char=0.7 und pad=32 geben etwas mehr Reserve, damit der Text
+       auch bei laengeren Namen/Rollen nicht ueber den Box-Rand ragt."""
     zeilen: list[str] = (label or "").split("\n")
     maxlen: int = max((len(z) for z in zeilen), default=0)
     return maxlen * fontsize * char + pad
