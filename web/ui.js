@@ -19,8 +19,9 @@ export function slAddRow(data = {}) {
     <td><input type="text" value="${esc(data.stimme || '')}" data-key="stimme"></td>
     <td><input type="text" value="${esc(data.instrument || '')}" data-key="instrument"></td>
     <td><input type="text" value="${esc(data.bemerkung || '')}" data-key="bemerkung"></td>
+    <td class="sl-del-td"><button class="sek sl-del" title="Zeile entfernen">✕</button></td>
   `;
-  
+
   // Zeile für Edit-Modal
   const trEdit = document.createElement('tr');
   trEdit.innerHTML = trSidebar.innerHTML;
@@ -39,11 +40,15 @@ export function slAddRow(data = {}) {
   setupSync(trSidebar, trEdit);
   setupSync(trEdit, trSidebar);
 
+  // Loeschen: beide Ansichten (Sidebar + Edit-Modal) gemeinsam entfernen.
+  const entferne = () => { trSidebar.remove(); trEdit.remove(); };
+  trSidebar.querySelector('.sl-del').onclick = entferne;
+  trEdit.querySelector('.sl-del').onclick = entferne;
+
   slTbody.appendChild(trSidebar);
   slEditTbody.appendChild(trEdit);
 }
 
-document.getElementById('slAddRow').onclick = () => slAddRow();
 document.getElementById('slEditAddRow').onclick = () => slAddRow();
 document.getElementById('slOpenEdit').onclick = () => slEditModal.hidden = false;
 document.getElementById('closeSlEdit').onclick = () => slEditModal.hidden = true;
