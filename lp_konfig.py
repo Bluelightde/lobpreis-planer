@@ -144,8 +144,11 @@ def lade_sitzungen(pfad: str = SITZUNGEN) -> dict[str, Any]:
     """Gespeicherte Konfigurations-Snapshots: {name: {besetzung_text, setlist, ...}}.
        Persoenliche Daten -- gitignored."""
     if os.path.isfile(pfad):
-        with open(pfad, encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(pfad, encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            return {}
     return {}
 
 

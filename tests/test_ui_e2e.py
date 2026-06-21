@@ -5,6 +5,7 @@ import http.client
 import json
 import os
 import sys
+import shutil
 import threading
 import time
 import unittest
@@ -298,7 +299,6 @@ class UIEndToEndTests(unittest.TestCase):
 
     def setUp(self):
         # Deterministisch: sitzungen.json sichern und leeren.
-        import shutil
         self._sitz_backup = None
         if os.path.isfile(L.SITZUNGEN):
             self._sitz_backup = L.SITZUNGEN + ".bak"

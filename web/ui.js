@@ -118,7 +118,7 @@ export async function speichereSitzung() {
   if (!name) { profilMsg.textContent = 'Bitte Profil-Name eingeben.'; profilMsg.className = 'err'; return; }
   // Bei existierendem Namen nachfragen, bevor wir ueberschreiben.
   const bekannt = Array.from(profilSelect.options).some(o => o.value === name);
-  if (bekannt && !await bestaetige('Profil „' + name + '“ existiert bereits – überschreiben?')) {
+  if (bekannt && !await bestaetige('Profil „' + name + '“ existiert bereits – überschreiben?', 'Überschreiben')) {
     document.getElementById('profilName').focus();
     return;
   }
@@ -167,28 +167,34 @@ export async function ladeSitzung() {
   HAUPT_POS = s.haupt_pos ? JSON.parse(JSON.stringify(s.haupt_pos)) : {};
   LETZTES = null;  // alter Stand verwerfen, damit Edits nicht aufs falsche Layout greifen
   await erzeugen();
-  // Edits ueber zeile/bus matchen (stabil auch bei veraenderter Besetzung).
-  if (LETZTES && LETZTES.excel) {
-    const inputs = LETZTES.excel.inputs || [];
-    (s.input_edits || []).forEach(e => {
-      const inp = inputs.find(x => x.zeile === e.zeile);
-      if (inp) {
-        inp.label = e.label; inp.mic = e.mic;
-        inp.sb1 = e.sb1; inp.sb2 = e.sb2;
-      }
-    });
-    const busse = LETZTES.excel.busse || [];
-    (s.bus_edits || []).forEach(be => {
-      const b = busse.find(x => x.bus === be.bus);
-      if (b) b.name = be.name;
-    });
-    // Patchliste + Outputs neu rendern, damit Edits sichtbar werden.
-    renderePatchliste(LETZTES);
-    rendereStagebox('tSB1', LETZTES.excel.stagebox1);
-    rendereStagebox('tSB2', LETZTES.excel.stagebox2);
-    rendereOutputs(LETZTES);
-    regeneriereDownload();
+  // Wenn erzeugen() fehlgeschlagen ist (z.B. ungueltiger Besetzungstext),
+  // ist LETZTES null und der Fehler wird bereits im #fehler-Container
+  // angezeigt. Wir brechen ab und geben im Profil-Bereich einen Hinweis.
+  if (!LETZTES || !LETZTES.excel) {
+    profilMsg.textContent = '⚠ Profil „' + name + '“ geladen, aber Erzeugen ist fehlgeschlagen — siehe Fehler oben.';
+    profilMsg.className = 'err';
+    return;
   }
+  // Edits ueber zeile/bus matchen (stabil auch bei veraenderter Besetzung).
+  const inputs = LETZTES.excel.inputs || [];
+  (s.input_edits || []).forEach(e => {
+    const inp = inputs.find(x => x.zeile === e.zeile);
+    if (inp) {
+      inp.label = e.label; inp.mic = e.mic;
+      inp.sb1 = e.sb1; inp.sb2 = e.sb2;
+    }
+  });
+  const busse = LETZTES.excel.busse || [];
+  (s.bus_edits || []).forEach(be => {
+    const b = busse.find(x => x.bus === be.bus);
+    if (b) b.name = be.name;
+  });
+  // Patchliste + Outputs neu rendern, damit Edits sichtbar werden.
+  renderePatchliste(LETZTES);
+  rendereStagebox('tSB1', LETZTES.excel.stagebox1);
+  rendereStagebox('tSB2', LETZTES.excel.stagebox2);
+  rendereOutputs(LETZTES);
+  regeneriereDownload();
   profilMsg.textContent = '✓ Profil „' + name + '“ geladen.';
   profilMsg.className = 'okbox';
 }
@@ -434,13 +440,15 @@ function aktualisiereSbRange() {
   if (s1) s1.textContent = '(A1–A' + KAP + ')';
   if (s2) s2.textContent = '(A' + (KAP + 1) + '–A' + (2 * KAP) + ')';
 }
-// Bestaetigungsdialog (eigenes Fenster) -> Promise<boolean>
-function bestaetige(text) {
+// Bestaetigungsdialog (eigenes Fenster) -> Promise<boolean>.
+// jaText: Beschriftung des Bestaetigen-Buttons (Default: 'Zurücksetzen').
+function bestaetige(text, jaText = 'Zurücksetzen') {
   return new Promise(resolve => {
     const ov = document.getElementById('confirmModal');
     document.getElementById('confirmText').textContent = text;
-    ov.hidden = false;
     const ja = document.getElementById('confirmJa'), nein = document.getElementById('confirmNein');
+    ja.textContent = jaText;
+    ov.hidden = false;
     const fertig = v => { ov.hidden = true; ja.onclick = null; nein.onclick = null; resolve(v); };
     ja.onclick = () => fertig(true);
     nein.onclick = () => fertig(false);
