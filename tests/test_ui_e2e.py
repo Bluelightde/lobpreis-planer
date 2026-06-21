@@ -294,5 +294,97 @@ class UIEndToEndTests(unittest.TestCase):
         zellen = self._excel_zellen(regen["excel_b64"])
         self.assertTrue(zellen.get("C5"))
         self.assertEqual(regen.get("fehlend"), [])
+    # ----- /api/sitzungen: Konfigurationen speichern/laden/loeschen -----
+
+    def setUp(self):
+        # Deterministisch: sitzungen.json sichern und leeren.
+        import shutil
+        self._sitz_backup = None
+        if os.path.isfile(L.SITZUNGEN):
+            self._sitz_backup = L.SITZUNGEN + ".bak"
+            shutil.copy2(L.SITZUNGEN, self._sitz_backup)
+        if os.path.isfile(L.SITZUNGEN):
+            os.remove(L.SITZUNGEN)
+
+    def tearDown(self):
+        if os.path.isfile(L.SITZUNGEN):
+            os.remove(L.SITZUNGEN)
+        if self._sitz_backup and os.path.isfile(self._sitz_backup):
+            shutil.move(self._sitz_backup, L.SITZUNGEN)
+
+    def test_sitzungen_leer_bei_start(self):
+        """Ohne sitzungen.json liefert GET ein leeres Dict."""
+        status, body = self._get("/api/sitzungen")
+        self.assertEqual(status, 200)
+        j = json.loads(body)
+        self.assertEqual(j.get("sitzungen"), {})
+
+    def test_sitzung_speichern_und_laden(self):
+        """POST speichert eine Sitzung, GET liefert sie zurueck."""
+        _, body = self._post("/api/sitzungen", {
+            "aktion": "speichern", "name": "Testprofil",
+            "besetzung_text": "Bass DD1: Alex\n",
+            "setlist": [{"nr": "1", "lied": "Amazing Grace", "stimme": "Lead",
+                         "instrument": "Gitarre", "bemerkung": ""}],
+            "dateiname": "DD1",
+            "haupt_pos": {"vorne_0": {"x": 100, "y": 200}},
+            "input_edits": [{"zeile": 5, "label": "Test", "mic": "SM58",
+                             "sb1": 1, "sb2": None}],
+            "bus_edits": [{"bus": 1, "name": "Monitor 1"}],
+        })
+        j = json.loads(body)
+        self.assertTrue(j.get("ok"), body)
+        self.assertEqual(j.get("anzahl"), 1)
+
+        status, body = self._get("/api/sitzungen")
+        self.assertEqual(status, 200)
+        j = json.loads(body)
+        sitz = j["sitzungen"]
+        self.assertIn("Testprofil", sitz)
+        self.assertEqual(sitz["Testprofil"]["besetzung_text"], "Bass DD1: Alex\n")
+        self.assertEqual(sitz["Testprofil"]["dateiname"], "DD1")
+        self.assertEqual(len(sitz["Testprofil"]["setlist"]), 1)
+        self.assertEqual(sitz["Testprofil"]["setlist"][0]["lied"], "Amazing Grace")
+        self.assertEqual(sitz["Testprofil"]["haupt_pos"]["vorne_0"]["x"], 100)
+        self.assertEqual(sitz["Testprofil"]["input_edits"][0]["zeile"], 5)
+        self.assertEqual(sitz["Testprofil"]["bus_edits"][0]["name"], "Monitor 1")
+
+    def test_sitzung_loeschen(self):
+        """POST mit aktion=loeschen entfernt die Sitzung."""
+        self._post("/api/sitzungen", {"aktion": "speichern", "name": "Weg",
+                                       "besetzung_text": "", "setlist": []})
+        _, body = self._get("/api/sitzungen")
+        self.assertIn("Weg", json.loads(body)["sitzungen"])
+        self._post("/api/sitzungen", {"aktion": "loeschen", "name": "Weg"})
+        _, body = self._get("/api/sitzungen")
+        self.assertEqual(json.loads(body)["sitzungen"], {})
+
+    def test_sitzung_ohne_name_fehler(self):
+        """Speichern ohne Name -> Fehler."""
+        _, body = self._post("/api/sitzungen", {"aktion": "speichern", "name": "",
+                                                 "besetzung_text": "", "setlist": []})
+        j = json.loads(body)
+        self.assertFalse(j.get("ok"))
+        self.assertIn("Name", j.get("error", ""))
+
+    def test_sitzung_unbekannte_aktion_fehler(self):
+        """Unbekannte Aktion -> Fehler."""
+        _, body = self._post("/api/sitzungen", {"aktion": "hacker", "name": "x"})
+        j = json.loads(body)
+        self.assertFalse(j.get("ok"))
+
+    def test_sitzung_persistiert_auf_disk(self):
+        """Speichern schreibt tatsaechlich sitzungen.json (atomar)."""
+        self._post("/api/sitzungen", {"aktion": "speichern", "name": "Disk",
+                                      "besetzung_text": "x", "setlist": [],
+                                      "dateiname": "d", "haupt_pos": {},
+                                      "input_edits": [], "bus_edits": []})
+        self.assertTrue(os.path.isfile(L.SITZUNGEN))
+        with open(L.SITZUNGEN, encoding="utf-8") as f:
+            raw = json.load(f)
+        self.assertIn("Disk", raw)
+        # Atomar geschrieben: kein .tmp-File bleibt zurueck.
+        self.assertFalse(os.path.isfile(L.SITZUNGEN + ".tmp"))
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

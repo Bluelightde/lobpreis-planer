@@ -58,6 +58,27 @@
     <div class="hint">Tipp: „?“ oder leer = unbesetzt. Mehrfachrollen werden je Person zusammengefasst.</div>
   </section>
 
+  <section class="card">
+    <label>Konfiguration speichern</label>
+    <div class="row">
+      <div style="flex:1">
+        <select id="profilSelect" style="width:100%">
+          <option value="">— Profil wählen —</option>
+        </select>
+      </div>
+      <button class="sek" id="profilLaden" title="Gewähltes Profil laden">Laden</button>
+      <button class="sek" id="profilLoeschen" title="Gewähltes Profil löschen">Löschen</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div style="flex:1">
+        <input type="text" id="profilName" placeholder="Profil-Name" style="width:100%">
+      </div>
+      <button id="profilSpeichern" title="Aktuelle Eingaben als Profil speichern">Speichern</button>
+    </div>
+    <div class="hint">Speichert Besetzung, Setliste, Patchlisten-Edits und Bühnenpositionen. Persönlich, lokal auf diesem Server.</div>
+    <div class="hint" id="profilMsg"></div>
+  </section>
+
   <section class="card spalte-umbruch">
     <label for="setliste">Setliste (Bearbeiten)</label>
     <div style="overflow-x:auto">

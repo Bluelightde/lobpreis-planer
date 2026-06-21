@@ -17,6 +17,7 @@ SOLO_PERSONEN: str = os.path.join(BASIS, "config", "solo_personen.json")
 EINSTELLUNGEN: str = os.path.join(BASIS, "config", "einstellungen.json")
 CHURCHTOOLS: str = os.path.join(BASIS, "config", "config.json")
 CHURCHTOOLS_ALT: str = os.path.join(BASIS, "config", "churchtools.json")
+SITZUNGEN: str = os.path.join(BASIS, "config", "sitzungen.json")
 VORLAGE_SKIZZE: str = os.path.join(BASIS, "vorlagen", "Skizze_default.excalidraw")
 VORLAGE_EXCEL: str = os.path.join(BASIS, "vorlagen", "X32-Belegungsplan_Standard.xlsx")
 VORLAGEN_DIR: str = os.path.join(BASIS, "vorlagen")
@@ -136,4 +137,17 @@ def lade_solo_personen(pfad: str = SOLO_PERSONEN,
 
 
 def speichere_solo_personen(daten: Any, pfad: str = SOLO_PERSONEN) -> None:
+    _schreibe_json_atomar(pfad, daten)
+
+
+def lade_sitzungen(pfad: str = SITZUNGEN) -> dict[str, Any]:
+    """Gespeicherte Konfigurations-Snapshots: {name: {besetzung_text, setlist, ...}}.
+       Persoenliche Daten -- gitignored."""
+    if os.path.isfile(pfad):
+        with open(pfad, encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def speichere_sitzungen(daten: Any, pfad: str = SITZUNGEN) -> None:
     _schreibe_json_atomar(pfad, daten)

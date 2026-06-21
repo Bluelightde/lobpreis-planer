@@ -90,6 +90,124 @@ export function slGetRows() {
   });
 }
 
+// ----- Konfigurationen (Sitzungen) speichern/laden/loeschen -----
+const profilSelect = document.getElementById('profilSelect');
+const profilMsg = document.getElementById('profilMsg');
+
+export async function ladeSitzungen() {
+  try {
+    const r = await fetch('/api/sitzungen');
+    const j = await r.json();
+    return j.sitzungen || {};
+  } catch (e) { return {}; }
+}
+
+export function aktualisiereProfilDropdown(sitzungen) {
+  const cur = profilSelect.value;
+  profilSelect.innerHTML = '<option value="">— Profil wählen —</option>';
+  Object.keys(sitzungen).sort().forEach(name => {
+    const o = document.createElement('option');
+    o.value = name; o.textContent = name;
+    profilSelect.appendChild(o);
+  });
+  if (cur && sitzungen[cur]) profilSelect.value = cur;
+}
+
+export async function speichereSitzung() {
+  const name = document.getElementById('profilName').value.trim();
+  if (!name) { profilMsg.textContent = 'Bitte Profil-Name eingeben.'; profilMsg.className = 'err'; return; }
+  // Snapshot: Besetzungstext, Setlist, Dateiname, Buehnenpositionen, Edits.
+  const inputEdits = (LETZTES && LETZTES.excel && LETZTES.excel.inputs || []).map(e => ({
+    zeile: e.zeile, label: e.label, mic: e.mic, sb1: e.sb1, sb2: e.sb2,
+  }));
+  const busEdits = (LETZTES && LETZTES.excel && LETZTES.excel.busse || []).map(b => ({
+    bus: b.bus, name: b.name,
+  }));
+  try {
+    const r = await fetch('/api/sitzungen', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        aktion: 'speichern', name,
+        besetzung_text: document.getElementById('txt').value,
+        setlist: slGetRows(),
+        dateiname: document.getElementById('name').value,
+        haupt_pos: HAUPT_POS,
+        input_edits: inputEdits,
+        bus_edits: busEdits,
+      })});
+    const j = await r.json();
+    if (!j.ok) { profilMsg.textContent = j.error || 'Fehler'; profilMsg.className = 'err'; return; }
+    profilMsg.textContent = '✓ Profil „' + name + '“ gespeichert.';
+    profilMsg.className = 'okbox';
+    aktualisiereProfilDropdown(await ladeSitzungen());
+    profilSelect.value = name;
+  } catch (e) {
+    profilMsg.textContent = 'Fehler beim Speichern.'; profilMsg.className = 'err';
+  }
+}
+
+export async function ladeSitzung() {
+  const name = profilSelect.value;
+  if (!name) { profilMsg.textContent = 'Bitte Profil wählen.'; profilMsg.className = 'err'; return; }
+  const sitzungen = await ladeSitzungen();
+  const s = sitzungen[name];
+  if (!s) { profilMsg.textContent = 'Profil nicht gefunden.'; profilMsg.className = 'err'; return; }
+  // Besetzung + Dateiname + Setlist wiederherstellen.
+  document.getElementById('txt').value = s.besetzung_text || '';
+  document.getElementById('name').value = s.dateiname || name;
+  slTbody.innerHTML = '';
+  slEditTbody.innerHTML = '';
+  (s.setlist || []).forEach(r => slAddRow(r));
+  // Transiente Buehnenpositionen setzen, dann erzeugen().
+  HAUPT_POS = s.haupt_pos ? JSON.parse(JSON.stringify(s.haupt_pos)) : {};
+  LETZTES = null;  // alter Stand verwerfen, damit Edits nicht aufs falsche Layout greifen
+  await erzeugen();
+  // Edits ueber zeile/bus matchen (stabil auch bei veraenderter Besetzung).
+  if (LETZTES && LETZTES.excel) {
+    const inputs = LETZTES.excel.inputs || [];
+    (s.input_edits || []).forEach(e => {
+      const inp = inputs.find(x => x.zeile === e.zeile);
+      if (inp) {
+        inp.label = e.label; inp.mic = e.mic;
+        inp.sb1 = e.sb1; inp.sb2 = e.sb2;
+      }
+    });
+    const busse = LETZTES.excel.busse || [];
+    (s.bus_edits || []).forEach(be => {
+      const b = busse.find(x => x.bus === be.bus);
+      if (b) b.name = be.name;
+    });
+    // Patchliste + Outputs neu rendern, damit Edits sichtbar werden.
+    renderePatchliste(LETZTES);
+    rendereStagebox('tSB1', LETZTES.excel.stagebox1);
+    rendereStagebox('tSB2', LETZTES.excel.stagebox2);
+    rendereOutputs(LETZTES);
+    regeneriereDownload();
+  }
+  profilMsg.textContent = '✓ Profil „' + name + '“ geladen.';
+  profilMsg.className = 'okbox';
+}
+
+export async function loescheSitzung() {
+  const name = profilSelect.value;
+  if (!name) { profilMsg.textContent = 'Bitte Profil wählen.'; profilMsg.className = 'err'; return; }
+  try {
+    const r = await fetch('/api/sitzungen', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({aktion: 'loeschen', name})});
+    const j = await r.json();
+    if (!j.ok) { profilMsg.textContent = j.error || 'Fehler'; profilMsg.className = 'err'; return; }
+    profilMsg.textContent = '✓ Profil „' + name + '“ gelöscht.';
+    profilMsg.className = 'okbox';
+    aktualisiereProfilDropdown(await ladeSitzungen());
+    document.getElementById('profilName').value = '';
+  } catch (e) {
+    profilMsg.textContent = 'Fehler beim Löschen.'; profilMsg.className = 'err';
+  }
+}
+
+document.getElementById('profilSpeichern').addEventListener('click', speichereSitzung);
+document.getElementById('profilLaden').addEventListener('click', ladeSitzung);
+document.getElementById('profilLoeschen').addEventListener('click', loescheSitzung);
+
 export function parseSetlisteText(text) {
   // Parst das Format: "- Titel (Stimme, Instrument, [Bemerkung])"
   const rows = [];
@@ -881,3 +999,6 @@ document.getElementById('dlScene').addEventListener('click', () => {
   if (!LETZTES || !LETZTES.scene_data) { alert('Keine Szenen-Vorlage gefunden.'); return; }
   download(LETZTES.scene_name, new Blob([LETZTES.scene_data], {type:'text/plain'}));
 });
+
+// Profil-Dropdown beim Start füllen.
+(async () => { aktualisiereProfilDropdown(await ladeSitzungen()); })();

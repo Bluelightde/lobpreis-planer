@@ -13,13 +13,14 @@ from typing import Any
 
 # -- Sub-Module (nach Pipeline-Stufen gegliedert) --
 from lp_konfig import (  # noqa: F401  (re-export für externe Nutzer)
-    BASIS, KONFIG, SPITZNAMEN, SOLO_PERSONEN, EINSTELLUNGEN, CHURCHTOOLS, CHURCHTOOLS_ALT,
+    BASIS, KONFIG, SPITZNAMEN, SOLO_PERSONEN, EINSTELLUNGEN, CHURCHTOOLS, CHURCHTOOLS_ALT, SITZUNGEN,
     VORLAGE_SKIZZE, VORLAGE_EXCEL, VORLAGEN_DIR, AUSGABE, M, KUERZEL,
     _deep_merge, _schreibe_json_atomar, _SCHREIB_LOCK,
     lade_konfig, lade_einstellungen, speichere_einstellungen,
     lade_churchtools, speichere_churchtools,
     lade_spitznamen, speichere_spitznamen,
     lade_solo_personen, speichere_solo_personen,
+    lade_sitzungen, speichere_sitzungen,
 )
 from lp_parsing import parse_besetzung, parse_besetzung_text, personen_aus_eintraegen  # noqa: F401
 from lp_personen import vorname, anzeige_name, kurz_rolle, label_fuer_person  # noqa: F401

@@ -3,6 +3,7 @@
 config/config.json
 config/spitznamen.json
 config/solo_personen.json
+config/sitzungen.json
 
 # erzeugte Dateien
 ausgabe/

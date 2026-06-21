@@ -229,6 +229,8 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"solo_personen": L.lade_solo_personen()})
         elif weg.path == "/api/einstellungen":
             self._json(self._einstellungen_slice())
+        elif weg.path == "/api/sitzungen":
+            self._json({"sitzungen": L.lade_sitzungen()})
         elif weg.path == "/api/basis_skizze":
             try:
                 cfg = L.lade_konfig()
@@ -437,6 +439,37 @@ class Handler(BaseHTTPRequestHandler):
                 })
             except Exception as e:  # noqa: BLE001
                 self._fehler("/api/regenerate", e)
+            return
+
+        if pfad == "/api/sitzungen":
+            try:
+                aktion = body.get("aktion")
+                name = str(body.get("name") or "").strip()
+                if not name:
+                    return self._json({"ok": False, "error": "Name fehlt."})
+                sitzungen = L.lade_sitzungen()
+                if aktion == "speichern":
+                    # Snapshot: Besetzungstext, Setlist-Zeilen, Dateiname,
+                    # transiente Buehnenpositionen, Input-/Bus-Edits.
+                    sitzungen[name] = {
+                        "besetzung_text": str(body.get("besetzung_text") or ""),
+                        "setlist": body.get("setlist") or [],
+                        "dateiname": str(body.get("dateiname") or ""),
+                        "haupt_pos": body.get("haupt_pos") or {},
+                        "input_edits": body.get("input_edits") or [],
+                        "bus_edits": body.get("bus_edits") or [],
+                    }
+                    L.speichere_sitzungen(sitzungen)
+                    self._json({"ok": True, "anzahl": len(sitzungen)})
+                elif aktion == "loeschen":
+                    if name in sitzungen:
+                        del sitzungen[name]
+                        L.speichere_sitzungen(sitzungen)
+                    self._json({"ok": True, "anzahl": len(sitzungen)})
+                else:
+                    return self._json({"ok": False, "error": "unbekannte Aktion"})
+            except Exception as e:  # noqa: BLE001
+                self._fehler("/api/sitzungen", e)
             return
 
         if pfad != "/api/erzeugen":
