@@ -116,6 +116,12 @@ export function aktualisiereProfilDropdown(sitzungen) {
 export async function speichereSitzung() {
   const name = document.getElementById('profilName').value.trim();
   if (!name) { profilMsg.textContent = 'Bitte Profil-Name eingeben.'; profilMsg.className = 'err'; return; }
+  // Bei existierendem Namen nachfragen, bevor wir ueberschreiben.
+  const bekannt = Array.from(profilSelect.options).some(o => o.value === name);
+  if (bekannt && !await bestaetige('Profil „' + name + '“ existiert bereits – überschreiben?')) {
+    document.getElementById('profilName').focus();
+    return;
+  }
   // Snapshot: Besetzungstext, Setlist, Dateiname, Buehnenpositionen, Edits.
   const inputEdits = (LETZTES && LETZTES.excel && LETZTES.excel.inputs || []).map(e => ({
     zeile: e.zeile, label: e.label, mic: e.mic, sb1: e.sb1, sb2: e.sb2,

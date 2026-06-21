@@ -18,7 +18,8 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
     Löschen. Laden wendet Edits über stabile `zeile`/`bus`-Matches an, nicht
     über Array-Index.
   - API: `GET /api/sitzungen`, `POST /api/sitzungen` mit
-    `aktion: speichern|loeschen`.
+    `aktion: speichern|loeschen`. Speichern unter existierendem Namen fragt
+    vor dem Überschreiben nach.
 - **Setliste – Zeilen entfernen:** jede Setlist-Zeile hat einen Löschen-Button
   (✕) im Detail-Modal, der die Zeile in Sidebar und Detailansicht gemeinsam
   entfernt. Hinzufügen und Entfernen nur im Detail-Modal; die kompakte
