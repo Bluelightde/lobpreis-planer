@@ -40,12 +40,51 @@ def _deep_merge(base: dict[str, Any], over: dict[str, Any] | None) -> dict[str, 
     return base
 
 
+def _lade_json(pfad: str, default: Any = None, strict: bool = False) -> Any:
+    """Laedt eine JSON-Datei mit umfassendem Schutz gegen korrupte Inhalte.
+
+    - Datei fehlt -> default (Default {}).
+    - JSON nicht parsebar -> Datei vorher zu <pfad>.corrupt sichern,
+      dann default. So bleibt der Datenverlust reparabel und fuer den
+      Nutzer sichtbar (statt still verschluckt).
+    - JSON ist kein dict -> wie korrupt behandeln (Typprüfung gegen #2).
+    - strict=True -> wirft ValueError statt default zu liefern. Wird im
+      Schreibpfad genutzt (POST /api/sitzungen), damit ein Speichern nie
+      alle anderen Profile loescht, weil die Datei gerade unlesbar war.
+    """
+    if default is None:
+        default = {}
+    if not os.path.isfile(pfad):
+        return default
+    try:
+        with open(pfad, encoding="utf-8") as f:
+            daten = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        if strict:
+            raise ValueError(f"sitzungen.json unlesbar: {pfad}")
+        # Datei zu .corrupt-N sichern (Nummerierung vermeidet Ueberschreiben
+        # eines bereits existierenden Backups).
+        i = 0
+        while True:
+            korrupt = f"{pfad}.corrupt{'' if i == 0 else f'.{i}'}"
+            if not os.path.exists(korrupt):
+                break
+            i += 1
+        try:
+            os.replace(pfad, korrupt)
+        except OSError:
+            pass
+        return default
+    if not isinstance(daten, dict):
+        if strict:
+            raise ValueError(f"{pfad} enthaelt kein JSON-Objekt")
+        return default
+    return daten
+
+
 def lade_einstellungen(pfad: str = EINSTELLUNGEN) -> dict[str, Any]:
     """UI-Einstellungen, die die mapping.json ueberschreiben."""
-    if os.path.isfile(pfad):
-        with open(pfad, encoding="utf-8") as f:
-            return json.load(f)
-    return {}
+    return _lade_json(pfad)
 
 
 _SCHREIB_LOCK: threading.Lock = threading.Lock()
@@ -101,10 +140,7 @@ def speichere_churchtools(daten: Any, pfad: str = CHURCHTOOLS) -> None:
 
 
 def lade_spitznamen(pfad: str = SPITZNAMEN) -> dict[str, str]:
-    if os.path.isfile(pfad):
-        with open(pfad, encoding="utf-8") as f:
-            return json.load(f)
-    return {}
+    return _lade_json(pfad)
 
 
 def speichere_spitznamen(daten: Any, pfad: str = SPITZNAMEN) -> None:
@@ -119,10 +155,9 @@ def lade_solo_personen(pfad: str = SOLO_PERSONEN,
        Bei Angabe von event_key werden die Event-spezifischen Einträge
        über die globalen gelegt (Deep-Merge pro Person).
     """
-    if not os.path.isfile(pfad):
+    daten = _lade_json(pfad)
+    if not daten:
         return {}
-    with open(pfad, encoding="utf-8") as f:
-        daten: dict[str, Any] = json.load(f)
     # Event-spezifische Overrides extrahieren (falls vorhanden)
     events: dict[str, dict[str, str]] = {}
     if isinstance(daten.get("@events"), dict):
@@ -140,17 +175,11 @@ def speichere_solo_personen(daten: Any, pfad: str = SOLO_PERSONEN) -> None:
     _schreibe_json_atomar(pfad, daten)
 
 
-def lade_sitzungen(pfad: str = SITZUNGEN) -> dict[str, Any]:
+def lade_sitzungen(pfad: str = SITZUNGEN, strict: bool = False) -> dict[str, Any]:
     """Gespeicherte Konfigurations-Snapshots: {name: {besetzung_text, setlist, ...}}.
-       Persoenliche Daten -- gitignored."""
-    if os.path.isfile(pfad):
-        try:
-            with open(pfad, encoding="utf-8") as f:
-                return json.load(f)
-        except (json.JSONDecodeError, OSError):
-            return {}
-    return {}
-
+       Persoenliche Daten -- gitignored.
+       strict=True wirft bei korrupter Datei (Schreibpfad: kein Datenverlust)."""
+    return _lade_json(pfad, strict=strict)
 
 def speichere_sitzungen(daten: Any, pfad: str = SITZUNGEN) -> None:
     _schreibe_json_atomar(pfad, daten)

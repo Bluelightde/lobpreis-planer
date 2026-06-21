@@ -447,7 +447,13 @@ class Handler(BaseHTTPRequestHandler):
                 name = str(body.get("name") or "").strip()
                 if not name:
                     return self._json({"ok": False, "error": "Name fehlt."})
-                sitzungen = L.lade_sitzungen()
+                # strict=True: bei korrupter Datei wirft lade_sitzungen ValueError,
+                # bevor wir ein Speichern durchfuehren — sonst wuerde {} als Basis
+                # dienen und alle anderen Profile unwiederbringlich loeschen.
+                try:
+                    sitzungen = L.lade_sitzungen(strict=True)
+                except ValueError as e:
+                    return self._json({"ok": False, "error": str(e)})
                 if aktion == "speichern":
                     # Snapshot: Besetzungstext, Setlist-Zeilen, Dateiname,
                     # transiente Buehnenpositionen, Input-/Bus-Edits.

@@ -170,7 +170,13 @@ export async function ladeSitzung() {
   // Wenn erzeugen() fehlgeschlagen ist (z.B. ungueltiger Besetzungstext),
   // ist LETZTES null und der Fehler wird bereits im #fehler-Container
   // angezeigt. Wir brechen ab und geben im Profil-Bereich einen Hinweis.
-  if (!LETZTES || !LETZTES.excel) {
+  if (!LETZTES) {
+    // Alte Tabellen entfernen, damit der Nutzer nicht auf einer
+    // veralteten Patchliste eines anderen Profils weiterarbeitet.
+    renderePatchliste({excel: {inputs: []}});
+    rendereStagebox('tSB1', []);
+    rendereStagebox('tSB2', []);
+    rendereOutputs({excel: {busse: []}});
     profilMsg.textContent = '⚠ Profil „' + name + '“ geladen, aber Erzeugen ist fehlgeschlagen — siehe Fehler oben.';
     profilMsg.className = 'err';
     return;
