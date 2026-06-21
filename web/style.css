@@ -232,7 +232,7 @@
   .warnbox { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:11px 14px; border-radius:10px; font-size:14px; }
   .warnbox ul { margin:6px 0 0; padding-left:20px; }
   .warnbox li { margin:2px 0; }
-  .okbox { background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:11px 14px; border-radius:10px; font-size:14px; font-weight:600; }
+  .okbox { background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:11px 14px; border-radius:10px; font-size:14px; font-weight:600; margin-top:14px; }
   #ctMsg { margin-top:10px; }
   html.dark body .warnbox { background:#3a2d0a; border-color:#a16207; color:#fde68a; }
   html.dark body .okbox { background:#0f2a1a; border-color:#166534; color:#86efac; }
