@@ -31,3 +31,20 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
   persistenter Override in `einstellungen.json` gespeichert zu werden. Der UI-
   Schalter `#trackAktiv` ist ein reiner Status-Indikator (disabled, nicht
   schreibbar).
+
+### Behoben
+- **Datenverlust bei korruptem `sitzungen.json`:** der ursprüngliche
+  Korrupt-JSON-Schutz (liefer `{}` bei Decode-Fehler) hatte einen
+  Datenverlust-Bug eingeführt — beim Speichern diente `{}` als Basis und
+  löschte alle bestehenden Profile. Behoben durch `_lade_json` mit
+  `strict`-Parameter: der Schreibpfad (`POST /api/sitzungen`) wirft bei
+  korrupter Datei `ValueError` und bricht ab, bevor gespeichert wird.
+  Der Lese-Pfad sichert die korrupte Datei zu `.corrupt-N` (nummeriert)
+  und liefert `{}` — der Nutzer kann die Datei reparieren.
+- **Korrupt-JSON-Schutz für alle Config-Lader:** `_lade_json` als
+  gemeinsamer Helper für `lade_einstellungen`, `lade_spitznamen`,
+  `lade_solo_personen`, `lade_sitzungen`. Prüft auch auf valides
+  Nicht-Objekt-JSON (`[]`, `42`) und behandelt es wie korrupt.
+- **Veraltete Tabellen nach fehlgeschlagenem Profil-Laden:** `ladeSitzung`
+  leert nun Patchliste, Stageboxen und Outputs, wenn `erzeugen()` scheitert
+  — kein Arbeiten mehr auf veralteten Tabellen eines anderen Profils.
